@@ -1,0 +1,187 @@
+generated: '2026-09-19'
+method: probed
+source: https://rsperformance.online/.well-known/agent-card.json
+card:
+  file: a2a/rsperformance-online-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: rsperformance.online
+  note: >-
+    The canonical card is served from the provider's apex host. The same 35,711-byte body is also
+    served byte-for-byte at https://rsperformance.online/.well-known/a2a.json (an alias the provider's
+    own ai-resources.json lists first in its preferred_fetch_order) and at
+    https://ai.rsperformance.online/.well-known/agent-card.json (the provider's AI gateway subdomain,
+    same IP block as the MCP host). The legacy path /.well-known/agent.json ALSO answers 200 on the
+    apex, but with a DIFFERENT, older card (version 2.2.0, four skills, $schema google.github.io/a2a
+    v1.0) — saved separately as well-known/rsperformance-online-legacy-agent.json, not as the agent
+    card of record. Ownership is not in question: provider.organization is "RS Performance",
+    provider.url is https://rsperformance.online, every interface URL is on rsperformance.online, and
+    the card is linked from the provider's homepage <link> tags, llms.txt, security.txt
+    (Acknowledgments:) and robots.txt discovery comments.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://rsperformance.online/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  body_bytes: 35711
+  body_parses_as: JSON object with AgentCard shape (name, version, protocolVersion, capabilities, skills, supportedInterfaces)
+  last_modified_header: Sun, 20 Sep 2026 01:00:24 GMT
+  corroborating_probes:
+  - url: https://rsperformance.online/.well-known/a2a.json
+    http_status: 200
+    note: byte-identical to agent-card.json (cmp)
+  - url: https://ai.rsperformance.online/.well-known/agent-card.json
+    http_status: 200
+    note: byte-identical to agent-card.json (cmp)
+  - url: https://rsperformance.online/.well-known/agent.json
+    http_status: 200
+    note: a different, older card (version 2.2.0, 4 skills) — legacy document, saved under well-known/
+  - url: https://www.rsperformance.online/.well-known/agent-card.json
+    http_status: 301
+    note: redirects to the apex
+  - url: https://mcp.rs3d.pl/.well-known/agent-card.json
+    http_status: 404
+  - url: https://rsperformance.online/
+    method: POST (JSON-RPC 2.0, method agent/ping)
+    http_status: 200
+    note: >-
+      The declared JSONRPC interface is live and speaks JSON-RPC 2.0: an unknown method returns
+      error code -32601 with the message "Unknown method ... Supported: message/send, message/stream,
+      tasks/get, tasks/list, tasks/cancel, tasks/subscribe; legacy aliases: SendMessage,
+      SendStreamingMessage, GetTask, ListTasks, CancelTask, SubscribeToTask." Response carried
+      X-RateLimit-Limit: 60 / X-RateLimit-Remaining: 59.
+  - url: https://rsperformance.online/
+    method: POST (JSON-RPC 2.0, method tasks/list)
+    http_status: 200
+    note: >-
+      Anonymous tasks/list returned 34 tasks with artifacts — the operational task cache is
+      readable without any credential (see deviations).
+  - url: https://rsperformance.online/message:send
+    method: GET
+    http_status: 405
+    note: Method Not Allowed on GET — the HTTP+JSON interface exists and expects POST.
+  - url: https://rsperformance.online/tasks
+    method: GET
+    http_status: 200
+    note: REST task list (application/json, 123,584 bytes) as the card's third interface declares.
+agent_card:
+  name: RS Performance — Gdańsk
+  description: >-
+    April 2026+ public A2A surface for automotive agents: OBD DTC resolution, EV or hybrid
+    high-voltage lane, workshop services, and booking. Dual transport: HTTP+JSON message endpoints
+    and full JSON-RPC 2.0 on POST / for tasks, streaming, history and list operations.
+  version: 2.5.0
+  protocol_version: 0.3.0
+  documentation_url: https://rsperformance.online/llms-full.txt
+  icon_url: https://rsperformance.online/images/rs_logo_new.webp
+  provider:
+    organization: RS Performance
+    url: https://rsperformance.online
+    founding_date: '2021-09-14'
+    predecessor: Premio Ring (same address, dissolved 2021-09-14 — the card carries a rebranding-continuity block)
+  supported_interfaces:
+  - url: https://rsperformance.online/message:send
+    protocol_binding: HTTP+JSON
+    protocol_version: '1.0'
+  - url: https://rsperformance.online/message:stream
+    protocol_binding: HTTP+JSON
+    protocol_version: '1.0'
+  - url: https://rsperformance.online/tasks
+    protocol_binding: HTTP+JSON
+    protocol_version: '1.0'
+  - url: https://rsperformance.online/
+    protocol_binding: JSONRPC
+    protocol_version: '1.0'
+  capabilities:
+    streaming: true
+    push_notifications: false
+    extended_agent_card: true
+    state_transition_history: null
+    extensions: 5
+  security_schemes: {}
+  security_requirements: []
+  default_input_modes: [text/plain, application/json]
+  default_output_modes: [text/plain, application/json]
+  skill_count: 9
+  skills:
+  - id: dtc-lookup
+    name: DTC Fault Code Lookup
+  - id: services-catalog-2026
+    name: RS Performance — katalog 19 usług warsztatu (Gdańsk)
+  - id: climate-hvac-knowledge
+    name: Automotive climate and HVAC knowledge — public July 2026 lane
+  - id: local-areas-gdansk-2026
+    name: RS Performance — 10 dzielnic Gdańska (lokalne landingi warsztatu)
+  - id: vehicle-diagnostics
+    name: Vehicle Diagnostics Service
+  - id: ev-hybrid-knowledge
+    name: EV, hybrid and high-voltage knowledge (dedicated lane)
+  - id: repair-services
+    name: Mechanical and Electrical Repairs
+  - id: booking
+    name: Service Appointment Booking
+  - id: gateway-semantic-routing
+    name: VPS semantic search and answer routing (fast lane)
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  protocol_version: 0.3.0
+  preferred_transport: null
+  transport: JSONRPC and HTTP+JSON (via supportedInterfaces[].protocolBinding)
+  hard_checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+  optional_fields:
+    default_input_modes: true
+    default_output_modes: true
+    preferred_transport: false
+  grade_basis: >-
+    Graded against the A2A 1.0.0 hard checks. capabilities is an OBJECT (streaming,
+    pushNotifications, extendedAgentCard, extensions[] as fields). protocolVersion is present at the
+    top level ("0.3.0"). skills is an ARRAY of nine skills, each with id, name, description, tags and
+    examples; three also declare inputModes/outputModes. Both optional discriminators are present
+    (defaultInputModes, defaultOutputModes). preferredTransport is absent, which is spec-current for
+    the 1.0-shaped supportedInterfaces[] block the card uses to declare its bindings.
+  deviations:
+  - field: url / protocolVersion / supportedInterfaces
+    observed: top-level url is null; top-level protocolVersion is "0.3.0" while each supportedInterfaces[] entry declares protocolVersion "1.0"
+    note: >-
+      The card mixes two shapes. A2A 0.3.0 requires a top-level url (and used preferredTransport +
+      additionalInterfaces); A2A 1.0 replaced that triple with supportedInterfaces[]. This card declares
+      0.3.0 at the top but is 1.0-shaped in its interfaces, so a strict 0.3.0 reader finds no url and
+      a strict 1.0 reader finds a stale protocolVersion. Every interface URL is real and answers.
+  - field: securitySchemes / securityRequirements
+    observed: empty object and empty array
+    note: >-
+      The surface is deliberately anonymous — the legacy agent.json states authentication.schemes
+      ["none"] and the provider's agents.json states authentication.type "none". Valid per spec, but a
+      reader cannot distinguish "public by design" from "not yet declared" from the canonical card alone.
+  - field: tasks/list (operational)
+    observed: anonymous JSON-RPC tasks/list returned 34 tasks created by other callers, with their artifacts
+    note: >-
+      Consistent with the card's "task list is operational cache" note, but it means any client can
+      read every other client's task history on the shared public agent. Recorded as an observation
+      about the deployment, not a card-shape defect.
+  - field: extension keys
+    observed: five non-standard top-level keys (x_rs_rebranding_2026, x_rs_ai_friendly_2026_04, x_rs_a2a_skill_matrix_2026_05, rs_discovery_wow_2026_04, x_rs_a2a_operator_2026_04) and x_rs_transport_note inside supportedInterfaces[]
+    note: >-
+      Underscore-prefixed vendor keys rather than the extensions[] mechanism the card also uses. A
+      schema-strict validator will flag rs_discovery_wow_2026_04, which carries no x prefix at all.
+  - field: legacy /.well-known/agent.json
+    observed: a second, older card (version 2.2.0, 4 skills, url set, streaming true, stateTransitionHistory true, pushNotifications false)
+    note: >-
+      Two divergent cards are live at the two well-known paths. A client that reads the legacy path
+      sees four skills and no gateway-routing skill; one that reads the canonical path sees nine.
+  - field: capabilities.extendedAgentCard
+    observed: 'true'
+    note: The card advertises an authenticated extended card but declares no security scheme under which to request one.
+surface_relationship:
+  note: >-
+    RS Performance publishes three agent surfaces that are NOT projections of one another. A2A: nine
+    skills on the apex host with JSON-RPC 2.0 on POST / and HTTP+JSON message endpoints (this card).
+    MCP: a remote FastMCP server "Diagnosta RS" at https://mcp.rs3d.pl/ with 14 tools reachable
+    anonymously (mcp/rsperformance-online-mcp.yml). REST: a 3-operation "RS Performance AI Gateway"
+    OpenAPI 3.1.0 on https://ai.rsperformance.online (openapi/). The A2A card's
+    gateway-semantic-routing skill points at the REST semanticSearch operation as its support plane.

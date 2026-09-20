@@ -1,23 +1,218 @@
 aid: rsperformance-online
 name: RS Performance
-description: 'RS Performance is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  RS Performance Sp. z o.o. is a single-location automotive diagnostics and repair workshop at
+  Al. Grunwaldzka 303B in Gdańsk, Poland (the Premio Ring site, rebranded 2021-09-14), serving
+  Gdańsk, Sopot, Gdynia and the Tricity with 19 workshop services from computer diagnostics, DPF/AdBlue,
+  turbo and gearbox work to tyre storage and B2B fleet service. What makes it an API provider is the
+  machine-readable layer it has built over its knowledge base: an anonymous A2A agent (nine skills,
+  JSON-RPC 2.0 and HTTP+JSON on rsperformance.online, agent card at the canonical well-known path),
+  a remote FastMCP server "Diagnosta RS" with 14 tools over a Qdrant vector store of services, FAQ,
+  repair reports and 12,000+ OBD-II fault codes, and a three-operation OpenAPI 3.1 "AI Gateway" on
+  ai.rsperformance.online for answer-first semantic search, freshness and answer routing — plus
+  llms.txt, security.txt, an ai-plugin manifest, JSON/Atom change feeds and a DTC JSON feed. Every
+  surface is free and unauthenticated under a fair-use, attribution-required policy.
+image: https://rsperformance.online/images/rs_logo_new.png
 url: https://raw.githubusercontent.com/api-evangelist/rsperformance-online/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: full enrichment pass 2026-09-19 (was stub/harvest)
+x-legal-entity: RS Performance Sp. z o.o. (NIP 5842808509, KRS 0000921604)
+x-country: PL
+x-city: Gdańsk
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+- Automotive
+- Auto Repair
+- Vehicle Diagnostics
+- OBD-II
+- Fault Codes
+- Knowledge Base
+- Semantic Search
+- A2A
+- MCP
+- agent-native
+- Local Business
+- Poland
+apis:
+- name: RS Performance AI Gateway API
+  description: >-
+    Three-operation REST gateway on ai.rsperformance.online (OpenAPI 3.1.0, info.version 1.3.0):
+    POST /api/search runs answer-first semantic retrieval over services, symptom pages, DTC references,
+    repair reports and blog content in Polish or English and returns assistant_answer, confidence,
+    recommended_next_steps, ask_back and scored hits with canonical source paths; GET
+    /.well-known/freshness.json and GET /.well-known/answer-routing.json expose the content version and
+    the intent-to-canonical-URL routing contract. Anonymous; no rate-limit headers on the gateway.
+  humanURL: https://ai.rsperformance.online/for-agents
+  baseURL: https://ai.rsperformance.online
+  tags:
+  - Semantic Search
+  - Knowledge Base
+  - Vehicle Diagnostics
+  - OBD-II
+  properties:
+  - type: OpenAPI
+    url: openapi/rsperformance-online-ai-gateway-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted, gateway host, v1.3.0)
+    url: https://ai.rsperformance.online/.well-known/openapi.json
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted, canonical host, v1.2.2)
+    url: https://rsperformance.online/.well-known/openapi.json
+  - type: Documentation
+    url: https://ai.rsperformance.online/for-agents
+  - type: APIReference
+    url: https://ai.rsperformance.online/.well-known/openapi.json
+  - type: Overlay
+    url: overlays/rsperformance-online-ai-gateway-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/rsperformance-online-problem-types.yml
+- name: RS Performance A2A Agent
+  description: >-
+    Public A2A agent for automotive intents — OBD DTC lookup, vehicle diagnostics, repair services,
+    EV/hybrid and climate/HVAC knowledge, a 19-service catalog, ten Gdańsk district routes, booking
+    and gateway semantic routing (nine skills). JSON-RPC 2.0 on POST https://rsperformance.online/
+    (message/send, message/stream, tasks/get, tasks/list, tasks/cancel, tasks/subscribe) plus HTTP+JSON
+    interfaces at /message:send, /message:stream and /tasks. Agent card version 2.5.0, protocolVersion
+    0.3.0, graded conformant; anonymous; 60 requests/minute fair-use limit signalled with X-RateLimit-*.
+  humanURL: https://rsperformance.online/centrum-wiedzy
+  baseURL: https://rsperformance.online
+  tags:
+  - A2A
+  - agent-native
+  - Vehicle Diagnostics
+  - Fault Codes
+  properties:
+  - type: AgentCard
+    url: a2a/rsperformance-online-a2a.yml
+  - type: AgentCard
+    name: Agent card (provider-hosted)
+    url: https://rsperformance.online/.well-known/agent-card.json
+  - type: Documentation
+    url: https://rsperformance.online/llms-full.txt
+  - type: ErrorCatalog
+    url: errors/rsperformance-online-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/rsperformance-online-rate-limits.yml
+- name: Diagnosta RS MCP Server
+  description: >-
+    Remote Model Context Protocol server (FastMCP, protocol 2025-06-18, Streamable HTTP with a
+    session header, legacy SSE at /mcp) at https://mcp.rs3d.pl/ — a host the provider's own
+    /.well-known/mcp.json, ai-plugin.json and CSP name and that shares the gateway's IP. Fourteen tools
+    answered an anonymous tools/list: semantic_search, diagnostic_search, search_notes, read_note,
+    repair_reports_overview, search_repair_reports, get_repair_report, health, list_sources and five
+    web-research/ingest tools, two of which write to the provider's store. A second advertised server at
+    /laravel/mcp/rs-knowledge returned HTTP 500 (MCP_SERVER_TOKEN missing) at probe time.
+  humanURL: https://rsperformance.online/wiedza-ai
+  baseURL: https://mcp.rs3d.pl
+  tags:
+  - MCP
+  - agent-native
+  - Semantic Search
+  - Knowledge Base
+  properties:
+  - type: MCPServer
+    url: mcp/rsperformance-online-mcp.yml
+  - type: MCPServer
+    name: Diagnosta RS (remote, live)
+    url: https://mcp.rs3d.pl/
+  - type: ToolCrosswalk
+    url: mcp/rsperformance-online-tool-crosswalk.yml
+  - type: Documentation
+    url: https://rsperformance.online/.well-known/mcp.json
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: VulnerabilityDisclosure
+  url: security/rsperformance-online-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/rsperformance-online-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/rsperformance-online-agentic-access.yml
 - type: Website
   url: https://rsperformance.online/
+- type: Documentation
+  url: https://rsperformance.online/llms-full.txt
+- type: GettingStarted
+  url: https://ai.rsperformance.online/for-agents
+- type: APIReference
+  url: https://ai.rsperformance.online/.well-known/openapi.json
+- type: Blog
+  url: https://rsperformance.online/blog
+- type: BlogRSS
+  url: https://rsperformance.online/feed.xml
+- type: Support
+  url: https://rsperformance.online/#kontakt
+- type: PrivacyPolicy
+  url: https://rsperformance.online/polityka-prywatnosci
+- type: About
+  url: https://rsperformance.online/o-nas
+- type: FAQ
+  url: https://rsperformance.online/faq
+- type: Sitemap
+  url: https://rsperformance.online/sitemap.xml
+- type: LLMsTxt
+  url: llms/rsperformance-online-llms.txt
+- type: LLMsTxt
+  name: llms.txt (provider-hosted)
+  url: https://rsperformance.online/llms.txt
+- type: AgentCard
+  url: a2a/rsperformance-online-a2a.yml
+- type: MCPServer
+  url: mcp/rsperformance-online-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/rsperformance-online-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/rsperformance-online-well-known.yml
+- type: SecurityTxt
+  url: well-known/rsperformance-online-security.txt
+- type: Security
+  url: https://rsperformance.online/.well-known/security.txt
+- type: AIPlugin
+  url: well-known/rsperformance-online-ai-plugin.json
+- type: Conformance
+  url: conformance/rsperformance-online-conformance.yml
+- type: ErrorCatalog
+  url: errors/rsperformance-online-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/rsperformance-online-lifecycle.yml
+- type: Authentication
+  url: authentication/rsperformance-online-authentication.yml
+- type: Conventions
+  url: conventions/rsperformance-online-conventions.yml
+- type: Overlay
+  url: overlays/rsperformance-online-ai-gateway-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/rsperformance-online-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/rsperformance-online-rate-limits.yml
+- type: ChangeLog
+  url: changelog/rsperformance-online-changelog.yml
+- type: ChangeLog
+  name: Changes feed (JSON Feed 1.1, provider-hosted)
+  url: https://rsperformance.online/feeds/changes.json
+- type: Packages
+  url: packages/rsperformance-online-packages.yml
+- type: RegulatoryPosture
+  url: regulatory/rsperformance-online-regulatory-posture.yml
+- type: DataSubjectRequest
+  url: https://rsperformance.online/polityka-prywatnosci
+- type: Subprocessors
+  url: https://rsperformance.online/polityka-prywatnosci
+- type: DataResidency
+  url: https://rsperformance.online/polityka-prywatnosci
+- type: AITransparency
+  url: https://rsperformance.online/
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 36
+  pass: local-v3

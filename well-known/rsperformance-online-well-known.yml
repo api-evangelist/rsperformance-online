@@ -1,0 +1,252 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes of the named /.well-known/* path list on rsperformance.online, www.rsperformance.online,
+  ai.rsperformance.online (the OpenAPI servers[] host and gateway) and mcp.rs3d.pl (the MCP server host),
+  2026-09-19. Every row below is a request that was actually issued; every status is the one returned.
+  A row carries file: only when a real, non-HTML document was fetched and saved.
+summary:
+  hosts_probed: 4
+  paths_probed: 64
+  documents_served: 20
+  path_echo_control: passed
+  documents_saved: 17
+  note: >-
+    RS Performance serves an unusually dense agent-discovery surface for a single-location auto
+    workshop: an RFC 9116 security.txt (on the apex and the gateway), an OpenAI-style ai-plugin.json
+    whose api.type is "mcp", a non-standard mcp.json naming two remote MCP servers, an A2A agent card at
+    both the canonical and legacy paths (two DIFFERENT cards), an OpenAPI at /.well-known/openapi.json
+    on both web hosts, and a family of provider-defined manifests (ai-resources.json, agents.json,
+    mcp-agent-card.json, aeo-editorial-gate.json, priority-answer-paths.json, freshness.json,
+    answer-routing.json). NONE of the OAuth/OIDC discovery documents exist on any host — the whole
+    surface is anonymous — and there is no RFC 9727 api-catalog, no APIs.json, no UCP/ACP and no
+    AAuth resource document. The MCP host serves no well-known document at all.
+  negative_control: >-
+    /.well-known/rsperformance-online-negative-control-9c2e41ab.json returned 404 on rsperformance.online
+    (HTML "Not Found" page, 6,586 bytes), 404 on ai.rsperformance.online (empty body) and 404 on
+    mcp.rs3d.pl ("Not Found", 9 bytes). No host echoes the requested path, so the 200s below are real.
+  soft_404_shape: >-
+    rsperformance.online answers unknown paths with a 6,586-byte HTML "Not Found" page (Laravel 404)
+    and HTTP 404 — an honest status, not a catch-all 200. Each 200 below carried a JSON or text/plain
+    body that parsed as the document type its path names.
+hosts:
+- host: rsperformance.online
+  role: Canonical website (Laravel on cyberfolks.pl shared hosting, LiteSpeed); A2A JSON-RPC endpoint on POST /
+  ip: 195.78.67.59
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/plain
+    file: rsperformance-online-security.txt
+    standard: RFC 9116
+    note: Contact (mailto + https), Expires 2027-09-20 (inside one year), Preferred-Languages pl,en, Canonical, Policy, Acknowledgments. Regenerated daily (comment header).
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-ai-plugin.json
+    standard: OpenAI plugin manifest schema_version v1 (api.type "mcp", auth.type none)
+    note: Points at https://mcp.rs3d.pl/laravel/mcp/rs-knowledge, the MCP endpoint that returned HTTP 500 at probe time.
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-mcp.json
+    standard: non-standard (mcp_version "1.0", servers[] with url/transport/tools)
+    note: Names two remote MCP servers on mcp.rs3d.pl; see mcp/rsperformance-online-mcp.yml.
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json
+    file: ../a2a/rsperformance-online-agent-card.json
+    standard: A2A Agent Card (protocolVersion 0.3.0, 9 skills)
+    note: Captured and graded in a2a/rsperformance-online-a2a.yml.
+  - path: /.well-known/a2a.json
+    status: 200
+    content_type: application/json
+    file: ../a2a/rsperformance-online-agent-card.json
+    note: Byte-identical alias of agent-card.json (cmp); listed first in the provider's own preferred_fetch_order.
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: rsperformance-online-legacy-agent.json
+    standard: A2A Agent Card, legacy path ($schema google.github.io/a2a v1.0)
+    note: A DIFFERENT, older card than agent-card.json — version 2.2.0 with 4 skills, authentication.schemes ["none"], plus an x-rs-nitrous-nos beacon block pointing at https://auto.rs3d.pl/webhook/ai-beacon (GET, live, 200).
+  - path: /.well-known/mcp-agent-card.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-mcp-agent-card.json
+    standard: non-standard provider manifest (agent_name RS-Diagnosis-Mesh, supported_protocols [mcp])
+    note: 44,962 bytes of entrypoints, freshness feeds, topic clusters and resources; not an MCP server card in any published schema.
+  - path: /.well-known/agents.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-agents.json
+    standard: non-standard provider manifest (version 2026-09-20-live)
+    note: Declares authentication.type none and rate_limits.requests_per_minute 60 — the only place the rate limit is stated in words.
+  - path: /.well-known/aeo-editorial-gate.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-aeo-editorial-gate.json
+    standard: non-standard provider manifest (editorial quality gate)
+  - path: /.well-known/openapi.json
+    status: 200
+    content_type: application/json
+    file: ../openapi/_original/rsperformance-online-ai-gateway-openapi-canonical-host-v1.2.2.json
+    standard: OpenAPI 3.1.0
+    note: info.version 1.2.2 with 2 operations; the copy on ai.rsperformance.online is 1.3.0 with 3 operations and is the one refined into openapi/.
+  - path: /.well-known/ai-resources.json
+    status: 200
+    content_type: application/json
+    file: null
+    note: 1,031,113-byte provider discovery manifest (121 resources, 59 machine_readable entries); recorded, NOT saved because of size. Fetch live.
+  - path: /.well-known/priority-answer-paths.json
+    status: 200
+    content_type: application/json
+    file: null
+    note: 132,843 bytes; recorded, not saved.
+  - path: /.well-known/rsperformance-online-negative-control-9c2e41ab.json
+    status: 404
+    note: negative control — cannot exist; 404 confirms the host does not echo paths.
+- host: www.rsperformance.online
+  role: Redirect-only alias
+  documents:
+  - path: /.well-known/security.txt
+    status: 301
+    note: 301 to https://rsperformance.online/.well-known/security.txt — every www path redirects to the apex.
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+- host: ai.rsperformance.online
+  role: AI gateway — the OpenAPI servers[] host (FastAPI behind the same Laravel front on a VPS)
+  ip: 185.180.207.211
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    file: rsperformance-online-security.txt
+    standard: RFC 9116
+    note: Byte-identical to the apex copy (cmp); Canonical still names the apex URL.
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-ai-plugin.json
+    note: Same document as the apex copy.
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-mcp.json
+    note: Same document as the apex copy.
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json
+    file: ../a2a/rsperformance-online-agent-card.json
+    note: Byte-identical to the apex canonical card (cmp).
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-ai-gateway-agent.json
+    standard: non-standard ($schema agent-protocol.org/schema/v1) — NOT an A2A card
+    note: 'Gateway manifest: capabilities.semantic_search (POST /api/search with input_schema), freshness, content_feeds, llm_context, markdown_pages, bridge (names the MCP endpoint), rescue_strategy (blocked_user_agent_families [ClaudeBot]), contact and attribution policy.'
+  - path: /.well-known/openapi.json
+    status: 200
+    content_type: application/json
+    file: ../openapi/_original/rsperformance-online-ai-gateway-openapi.json
+    standard: OpenAPI 3.1.0
+    note: info.version 1.3.0, 3 operations (semanticSearch, gatewayFreshness, gatewayAnswerRouting). Saved verbatim; refined YAML in openapi/.
+  - path: /.well-known/freshness.json
+    status: 200
+    content_type: application/json
+    file: rsperformance-online-ai-gateway-freshness.json
+    standard: non-standard freshness beacon
+    note: last_updated 2026-09-19T04:00:01Z, content_version 2026-09-19, training_policy permitted (CC-BY-SA-4.0), daily cron.
+  - path: /.well-known/answer-routing.json
+    status: 200
+    content_type: application/json
+    file: null
+    note: 326,500 bytes; recorded, not saved.
+  - path: /.well-known/rsperformance-online-negative-control-9c2e41ab.json
+    status: 404
+    note: negative control — 404 with an empty body.
+- host: mcp.rs3d.pl
+  role: MCP server host (FastMCP on uvicorn behind Caddy) — RFC 9728 would place protected-resource metadata here
+  ip: 185.180.207.211
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    note: Absent — consistent with the server being anonymous; there is no protected resource to describe.
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/rsperformance-online-negative-control-9c2e41ab.json
+    status: 404
+    note: negative control — "Not Found", 9 bytes.

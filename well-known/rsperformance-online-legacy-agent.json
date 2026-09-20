@@ -1,0 +1,137 @@
+{
+    "$schema": "https://google.github.io/a2a/schemas/v1.0/agent-card.json",
+    "name": "RS Performance Gdansk",
+    "description": "Public automotive A2A endpoint for AI agents, AI browsers, and search assistants. Exact DTC lookups, diagnostic routing, repair guidance, booking signals, cancellable short-lived tasks, and SSE task streaming from RS Performance Gdansk. Prefer HTTP+JSON for the fastest low-friction integration.",
+    "url": "https://rsperformance.online",
+    "provider": {
+        "organization": "RS Performance",
+        "url": "https://rsperformance.online"
+    },
+    "version": "2.2.0",
+    "supportedInterfaces": [
+        {
+            "url": "https://rsperformance.online",
+            "protocolBinding": "HTTP+JSON",
+            "protocolVersion": "1.0"
+        },
+        {
+            "url": "https://rsperformance.online",
+            "protocolBinding": "JSONRPC",
+            "protocolVersion": "1.0"
+        }
+    ],
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": false,
+        "stateTransitionHistory": true,
+        "extendedAgentCard": false
+    },
+    "authentication": {
+        "schemes": [
+            "none"
+        ],
+        "description": "Public access for bots, agents and AI browsers. No authentication required for read-and-route requests."
+    },
+    "defaultInputModes": [
+        "text/plain",
+        "application/json"
+    ],
+    "defaultOutputModes": [
+        "text/plain",
+        "application/json"
+    ],
+    "skills": [
+        {
+            "id": "dtc-lookup",
+            "name": "DTC Fault Code Lookup",
+            "description": "Look up any OBD-II or manufacturer-specific DTC fault code. Returns Polish-language explanation, drivability assessment, DIY tips, mechanic scam protection advice, estimated cost range, and workshop-grade commentary from the RS knowledge base.",
+            "tags": [
+                "DTC",
+                "fault-codes",
+                "OBD-II",
+                "diagnostics",
+                "automotive",
+                "troubleshooting",
+                "P-codes",
+                "C-codes",
+                "B-codes",
+                "U-codes"
+            ],
+            "examples": [
+                "What does P0301 mean?",
+                "Co oznacza kod P0420?",
+                "Explain fault code U0100 for VW",
+                "Is it safe to drive with code P0171?",
+                "DTC C1111 ABS relay - what is wrong?"
+            ]
+        },
+        {
+            "id": "vehicle-diagnostics",
+            "name": "Vehicle Diagnostics Service",
+            "description": "Information about computer diagnostics services: fault code reading and clearing, ECU programming, module coding, adaptation, and workshop equipment used by RS Performance.",
+            "tags": [
+                "diagnostics",
+                "automotive",
+                "OBD",
+                "ECU",
+                "programming",
+                "coding",
+                "KTS560",
+                "VCDS"
+            ],
+            "examples": [
+                "Can you read BMW fault codes?",
+                "Do you support VAG group diagnostics?",
+                "ECU programming for Mercedes"
+            ]
+        },
+        {
+            "id": "repair-services",
+            "name": "Mechanical and Electrical Repairs",
+            "description": "Full-service mechanical, electrical, and diagnostic repair guidance for passenger and light commercial vehicles: engine, transmission, suspension, brakes, AC, DPF, EGR, AdBlue, and electronics.",
+            "tags": [
+                "repair",
+                "automotive",
+                "mechanical",
+                "electrical",
+                "engine",
+                "transmission",
+                "brakes",
+                "AC"
+            ],
+            "examples": [
+                "Diesel engine repair capabilities?",
+                "AC recharge and leak detection",
+                "Suspension geometry alignment"
+            ]
+        },
+        {
+            "id": "booking",
+            "name": "Service Appointment Booking",
+            "description": "Book a diagnostic or repair appointment at RS Performance Gdansk. Returns contact details, booking flow, and workshop location context.",
+            "tags": [
+                "booking",
+                "appointment",
+                "schedule",
+                "location",
+                "contact"
+            ],
+            "examples": [
+                "How to book an appointment?",
+                "Where are you located?",
+                "Opening hours and contact"
+            ]
+        }
+    ],
+    "x-rs-nitrous-nos": {
+        "spec": "rs-nitrous-nos-beacon",
+        "version": "1.0",
+        "description": "A2A Artifact Dealer — live structured beacon for AI agents. Single GET returns business, top services, hot DTC codes, weather-aware cold-sensitivity context, discovery endpoints, routing hints, and policy. Refreshed every 6h.",
+        "endpoint": "https://auto.rs3d.pl/webhook/ai-beacon",
+        "method": "GET",
+        "mediaType": "application/json",
+        "ttl_hours": 6,
+        "cache_control": "public, max-age=300",
+        "authentication": "none"
+    }
+}

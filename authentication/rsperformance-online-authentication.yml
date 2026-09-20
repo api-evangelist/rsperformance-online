@@ -1,0 +1,51 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: >-
+  Provider statements on 2026-09-19 — agent card securitySchemes {} / securityRequirements [],
+  legacy agent.json authentication.schemes ["none"], agents.json authentication.type "none",
+  ai-plugin.json auth.type "none", security.txt "Public surfaces, no auth required" — cross-checked
+  against live anonymous calls that succeeded on every surface.
+docs: https://rsperformance.online/.well-known/agents.json
+summary:
+  types: [none]
+  api_key_in: []
+  oauth2_flows: []
+  anonymous_surfaces: [a2a-jsonrpc, a2a-http-json, rest-gateway, rest-apex-knowledge-search, mcp-diagnosta-rs]
+  gated_surfaces: []
+  note: >-
+    Every published surface is anonymous by design and says so in its own manifest. The OpenAPI
+    declares no securitySchemes and no security requirement; the A2A card declares an empty
+    securitySchemes object; the MCP server accepted initialize and tools/list with no credential and
+    publishes no RFC 9728 protected-resource metadata. Access control is fair-use rate limiting
+    (rate-limits/rsperformance-online-rate-limits.yml) and a documented bot allowlist in robots.txt.
+    The provider's own customer (/klient/login) and fleet (/flota/login) portals are session-login
+    web apps, disallowed in robots.txt, and are not API authentication.
+schemes:
+  - name: none
+    type: none
+    surfaces:
+      - surface: A2A JSON-RPC 2.0 — POST https://rsperformance.online/
+        declared_in: a2a/rsperformance-online-agent-card.json (securitySchemes {})
+        verified: tasks/list and an unknown-method probe answered 200 with no credential
+      - surface: A2A HTTP+JSON — https://rsperformance.online/message:send, /message:stream, /tasks
+        declared_in: well-known/rsperformance-online-legacy-agent.json (authentication.schemes ["none"])
+        verified: GET /tasks answered 200 application/json with no credential
+      - surface: REST gateway — https://ai.rsperformance.online/api/search
+        declared_in: openapi/rsperformance-online-ai-gateway-openapi.yml (no securitySchemes, no security[])
+        verified: POST returned 200 with hits for {"query":"P0299","limit":2}
+      - surface: REST apex — GET https://rsperformance.online/api/knowledge/search
+        declared_in: llms.txt ("Public semantic knowledge search")
+        verified: 200 with X-RateLimit-Limit 30
+      - surface: MCP — https://mcp.rs3d.pl/
+        declared_in: well-known/rsperformance-online-ai-plugin.json (auth.type none, has_user_authentication false)
+        verified: initialize, tools/list, resources/list, prompts/list all 200 with no credential; /.well-known/oauth-protected-resource 404
+    sources: [openapi/rsperformance-online-ai-gateway-openapi.yml, a2a/rsperformance-online-agent-card.json, well-known/rsperformance-online-agents.json, well-known/rsperformance-online-ai-plugin.json]
+crawler_identity:
+  robots_txt: https://rsperformance.online/robots.txt
+  note: >-
+    robots.txt enumerates named AI/search user agents (Applebot, Claude-SearchBot, DuckAssistBot,
+    Firecrawl, ...) with Allow: / and a shared Disallow set (/admin, /klient, /flota, /livewire,
+    /storage, /vendor); the gateway agent.json names ClaudeBot as a blocked family on canonical hosting
+    and offers ai.rsperformance.online as the rescue lane. Identification is by User-Agent string only —
+    no Web Bot Auth / HTTP Message Signatures.

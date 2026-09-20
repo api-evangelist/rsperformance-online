@@ -1,0 +1,76 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: >-
+  Harvested 2026-09-19 from (a) artifacts already in this repo — well-known/rsperformance-online-security.txt,
+  the gateway freshness beacon, the agent card; (b) the conventional paths probed live on
+  rsperformance.online — /accessibility, /accessibility/vpat, /legal/subprocessors, /legal/dpa,
+  /privacy/requests, /transparency, /trust, /security/sbom, /docs/data-residency, /ai/transparency,
+  /legal/report-content, /dostepnosc, /deklaracja-dostepnosci, /rodo — all 404 (/ai 301s to /ai/, an
+  unrelated content route); (c) the published privacy policy at /polityka-prywatnosci (last updated
+  18 February 2026) and the homepage. Nothing below infers that a regime applies; it records only what
+  the provider publishes.
+jurisdiction_facts:
+  legal_entity: RS Performance Sp. z o.o.
+  registry_ids: {NIP: '5842808509', KRS: '0000921604'}
+  address: Al. Grunwaldzka 303B, 80-314 Gdańsk, Poland
+  data_controller_contact: biuro@rsperformance.online
+signals:
+  data_subject_request:
+    url: https://rsperformance.online/polityka-prywatnosci
+    evidence:
+      - source: https://rsperformance.online/polityka-prywatnosci
+        section: '6. Twoje prawa'
+        substance: >-
+          Enumerates the GDPR (RODO) rights — access, rectification, erasure ("prawo do bycia
+          zapomnianym"), restriction, portability, objection, withdrawal of consent, and complaint to
+          the Prezes UODO — and section 9 names the contact for exercising them (biuro@rsperformance.online,
+          +48 58 552 24 00).
+    api: null
+    note: A request channel by email/phone, not an endpoint.
+  subprocessors:
+    url: https://rsperformance.online/polityka-prywatnosci
+    evidence:
+      - source: https://rsperformance.online/polityka-prywatnosci
+        section: '7. Odbiorcy danych'
+        substance: >-
+          Names the hosting provider (Cyber-Folks Sp. z o.o.) and an accounting office as the only
+          recipients, in a policy dated 18 February 2026.
+    note: >-
+      A two-entry recipients list inside the privacy policy rather than a standalone subprocessor
+      table; recorded because it names the processor and carries a date, which is the substance the
+      signal asks for. The MCP host mcp.rs3d.pl and the auto.rs3d.pl beacon are not mentioned.
+  data_residency:
+    url: https://rsperformance.online/polityka-prywatnosci
+    regions: [pl]
+    evidence:
+      - source: https://rsperformance.online/polityka-prywatnosci
+        section: '7. Odbiorcy danych'
+        substance_verbatim: 'Dane nie są przekazywane do państw trzecich ani organizacji międzynarodowych.'
+    note: >-
+      A statement that personal data is not transferred to third countries or international
+      organisations, with a Polish hosting provider named. Recorded verbatim; it is a privacy-policy
+      commitment, not a documented per-region API deployment.
+  ai_transparency:
+    url: https://rsperformance.online/
+    evidence:
+      - source: https://rsperformance.online/ (chat widget footer, server-rendered HTML)
+        substance_verbatim: 'Witaj! Jestem asystentem technicznym RS Performance. ... RS INTELLIGENCE v2 · Powered by Gemini + Qdrant RAG'
+      - source: response header on every page and well-known document
+        substance_verbatim: 'x-ai-training-policy: permitted; license=CC-BY-SA-4.0; attribution=RS Performance'
+    note: >-
+      The site discloses to visitors that its assistant is an AI system and names the model provider
+      and retrieval stack; the header discloses the provider's policy on ITS content being used for AI
+      training. Neither is an Article 50-style standalone disclosure page. No training-data summary
+      for a model the provider trains exists (it does not train one).
+absent:
+  sbom: probed /security/sbom (404); none linked from security.txt — search only, never derived
+  support_lifetime: no versioning or support-period page
+  accessibility_conformance: /accessibility, /accessibility/vpat, /dostepnosc, /deklaracja-dostepnosci all 404; no WCAG statement found
+  training_data_summary: not applicable — provider trains no model; its policy concerns others training on its content
+  global_privacy_control: no published GPC statement (the honored flag is never set from a header probe)
+  incident_notification: no DPA and no stated notification SLA
+  age_assurance: none
+  notice_and_action: none
+  transparency_report: none
+  exit_assistance: none

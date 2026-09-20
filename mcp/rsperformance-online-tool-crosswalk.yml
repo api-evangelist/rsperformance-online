@@ -1,0 +1,76 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  Derived by aligning the live MCP tools/list of https://mcp.rs3d.pl/ (14 tools, anonymous,
+  mcp/rsperformance-online-mcp-tools.json) with the provider's OpenAPI 3.1.0
+  (openapi/rsperformance-online-ai-gateway-openapi.yml, 3 operations on https://ai.rsperformance.online)
+  and the A2A card's nine skills (a2a/rsperformance-online-a2a.yml). Confidence per row.
+purpose: >-
+  Bind each agent-facing MCP tool to the REST operation that backs it so the tool inherits a real
+  input contract, and record the tools and operations that exist on only one surface. RS Performance's
+  REST, MCP and A2A surfaces are three overlapping-but-divergent projections of one knowledge plane
+  (a Qdrant vector store the provider calls the "VPS support plane"); none is a superset.
+surfaces:
+  rest_openapi: openapi/rsperformance-online-ai-gateway-openapi.yml   # 3 ops; servers[] https://ai.rsperformance.online; anonymous
+  rest_undocumented: https://rsperformance.online/api/knowledge/search?q=...&limit=...   # GET on the apex; live (200, X-RateLimit-Limit 30); named in llms.txt, NOT in the OpenAPI
+  mcp: https://mcp.rs3d.pl/                                             # tools/list NOT gated — 14 tools with inputSchema, live
+  mcp_secondary: https://mcp.rs3d.pl/laravel/mcp/rs-knowledge          # HTTP 500 at probe time (MCP_SERVER_TOKEN missing)
+  a2a: https://rsperformance.online/                                    # JSON-RPC 2.0; 9 skills; anonymous
+  graphql: none
+crosswalk:
+  - tool: semantic_search
+    category: search
+    rest: [semanticSearch]
+    binding: rest
+    confidence: medium
+    note: >-
+      Same knowledge plane and the same {query, limit} inputs, but the MCP tool adds a doc_type filter
+      the REST operation does not expose, and they are served by different processes on different
+      hosts (FastMCP on mcp.rs3d.pl vs the FastAPI gateway on ai.rsperformance.online).
+  - tool: diagnostic_search
+    category: search
+    rest: [semanticSearch]
+    binding: rest
+    confidence: high
+    note: >-
+      The tool's description names assistant_answer, confidence, recommended_next_steps, ask_back and
+      hits as its output — exactly the response fields the OpenAPI declares for POST /api/search.
+      Input differs in name only (top_k vs limit); use_dynamic has no REST equivalent.
+  - tool: health
+    category: operations
+    rest: [gatewayFreshness]
+    binding: rest
+    confidence: low
+    note: >-
+      Both are liveness/freshness signals, but health reports the MCP service and its directory
+      layout while gatewayFreshness reports the gateway's content version. Mapped as the nearest
+      REST signal, not as an equivalent.
+mcp_only:
+  - {tool: diagnostic_web_research, reason: live web search via the provider's SearXNG — no REST operation}
+  - {tool: diagnostic_search_live, reason: composite of local knowledge + live web research — server-side composite, described as owner-only}
+  - {tool: diagnostic_deep_research, reason: deep-ingest worker — owner-only composite, no REST operation}
+  - {tool: diagnostic_ingest_brand_knowledge, reason: WRITE — scrapes and saves a brand knowledge packet on the VPS; no public REST operation}
+  - {tool: list_sources, reason: filesystem directory listing of the private knowledge root}
+  - {tool: search_notes, reason: full-text search over private diagnostic notes; no REST operation}
+  - {tool: read_note, reason: reads a document from the private data store; no REST operation}
+  - {tool: write_intake_note, reason: WRITE — creates an intake note; no REST operation}
+  - {tool: repair_reports_overview, reason: 'proxies a "secured Laravel API" the OpenAPI does not describe; the public equivalent is the static feed https://rsperformance.online/feeds/repair-reports.json'}
+  - {tool: search_repair_reports, reason: same secured Laravel API; no public REST contract}
+  - {tool: get_repair_report, reason: same secured Laravel API; no public REST contract}
+rest_only:
+  - capability: answer routing
+    operations: [gatewayAnswerRouting]
+    note: GET /.well-known/answer-routing.json — no MCP tool returns the routing contract.
+a2a_only:
+  - skills: [booking, local-areas-gdansk-2026, services-catalog-2026, ev-hybrid-knowledge, climate-hvac-knowledge, repair-services, vehicle-diagnostics]
+    note: >-
+      A2A skills that resolve to curated canonical pages and booking context rather than to any REST
+      or MCP operation. dtc-lookup and gateway-semantic-routing overlap semantic_search / semanticSearch.
+coverage:
+  mcp_tools_named: 14
+  mcp_tools_bound_to_rest: 3
+  mcp_only: 11
+  rest_operations_total: 3
+  rest_operations_with_tool: 2
+  rest_only: 1
+  a2a_skills: 9

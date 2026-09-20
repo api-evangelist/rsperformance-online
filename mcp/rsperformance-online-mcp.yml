@@ -1,0 +1,157 @@
+generated: '2026-09-19'
+method: probed
+status: published
+source: https://rsperformance.online/.well-known/mcp.json
+docs: https://rsperformance.online/.well-known/mcp-agent-card.json
+summary: >-
+  RS Performance advertises two remote MCP servers on the host mcp.rs3d.pl through its own
+  /.well-known/mcp.json. The first, "Diagnosta RS" at https://mcp.rs3d.pl/, is a live FastMCP
+  Streamable HTTP server that answered an anonymous initialize + tools/list on 2026-09-19 with 14
+  tools, 3 resources and 0 prompts. The second, a Laravel MCP server at
+  https://mcp.rs3d.pl/laravel/mcp/rs-knowledge, is advertised in mcp.json, ai-plugin.json,
+  agents.json and the gateway freshness beacon but returned HTTP 500 "Server Configuration Error:
+  MCP_SERVER_TOKEN is missing" to initialize, tools/list and GET at probe time.
+ownership: >-
+  mcp.rs3d.pl is not on the provider's registrable domain. It is accepted as the provider's own host
+  because (1) rsperformance.online's own /.well-known/mcp.json and /.well-known/ai-plugin.json name
+  it as the MCP endpoint, (2) the apex's Content-Security-Policy header lists https://mcp.rs3d.pl in
+  connect-src, (3) mcp.rs3d.pl resolves to 185.180.207.211, the same address as the provider's
+  ai.rsperformance.online gateway and auto.rs3d.pl beacon, on the same cyberfolks.pl nameservers as
+  rsperformance.online, and (4) the live server's initialize instructions describe itself as
+  "Prywatny serwer MCP warsztatu RS Performance w Gdańsku" (the private MCP server of the RS
+  Performance workshop in Gdańsk).
+deployment:
+  mode: remote
+  endpoint: https://mcp.rs3d.pl/
+  auth: none
+  verified: probed
+  note: >-
+    A hosted HTTPS endpoint an MCP client POSTs to directly (Streamable HTTP, stateful: initialize
+    returns an Mcp-Session-Id header that every later request must carry; a request without it gets
+    HTTP 400 / JSON-RPC -32600 "Missing session ID", and a client that does not accept
+    text/event-stream gets HTTP 406). No stdio package, npx/uvx install or source repository is
+    published, so mode is remote, not both. auth is none because initialize, tools/list,
+    resources/list and prompts/list all succeeded with no credential, and no
+    /.well-known/oauth-protected-resource or oauth-authorization-server document exists on the host
+    (both 404). The server also exposes the legacy SSE transport at GET https://mcp.rs3d.pl/mcp,
+    which emits an `endpoint` event naming /mcp/messages/?session_id=....
+servers:
+  - id: diagnosta-rs
+    name: Diagnosta RS
+    endpoint: https://mcp.rs3d.pl/
+    transport: streamable-http
+    legacy_sse: https://mcp.rs3d.pl/mcp
+    stateful: true
+    auth: none
+    status: live
+    probe:
+      method: 'POST initialize -> notifications/initialized -> tools/list (Mcp-Session-Id)'
+      http_status: 200
+      protocol_version: '2025-06-18'
+      server_name: Diagnosta RS
+      server_version: 0.3.0
+      website_url: https://mcp.rs3d.pl
+      framework: FastMCP (tools carry _meta.fastmcp)
+      capabilities: [tools.listChanged, resources.listChanged, prompts.listChanged, extensions io.modelcontextprotocol/ui]
+      fetched: '2026-09-19'
+      tools_file: mcp/rsperformance-online-mcp-tools.json
+    instructions: >-
+      Prywatny serwer MCP warsztatu RS Performance w Gdańsku. Używaj semantic_search do
+      znajdowania informacji o usługach, cenach, godzinach, FAQ. Używaj search_notes do
+      przeszukiwania prywatnych notatek diagnostycznych. Używaj repair_reports do pracy z raportami
+      napraw. ZASADA: Nigdy nie podawaj cen bez diagnostyki. Motto: Najpierw weryfikacja i diagnoza,
+      potem wycena.
+    tool_count: 14
+    tools:
+      - name: semantic_search
+        input_schema: {query: 'string (required)', limit: 'integer, default 5', doc_type: "string, default '' — one of service|blog|dtc|business|faq"}
+        read_only: true
+        description: Search the RS Performance knowledge base using AI semantic search across services, FAQ, business info, blog posts and DTC codes.
+      - name: diagnostic_search
+        input_schema: {query: 'string (required)', top_k: 'integer, default 5', use_dynamic: 'boolean, default true'}
+        read_only: true
+        description: Compatibility bridge for legacy Diagnosta clients; returns assistant_answer, confidence, recommended_next_steps, ask_back plus raw hits.
+      - name: diagnostic_web_research
+        input_schema: {query: 'string (required)', limit: 'integer, default 3'}
+        read_only: true
+        description: Live web search through the provider's SearXNG with Trafilatura extraction.
+      - name: diagnostic_search_live
+        input_schema: {query: 'string (required)', top_k: 'integer, default 5', web_limit: 'integer, default 3', use_dynamic: 'boolean, default true'}
+        read_only: true
+        description: Combines local Diagnosta knowledge (canonical DTC JSON, private notes, Qdrant) with live web research; described as owner-only deep diagnosis.
+      - name: diagnostic_deep_research
+        input_schema: {query: 'string (required)', max_sources: 'integer, default 3'}
+        read_only: true
+        description: Owner-only deep internet research with a separate deep-ingest worker (HTML, documents, YouTube transcripts).
+      - name: diagnostic_ingest_brand_knowledge
+        input_schema: {brand: 'string (required)', max_queries: 'integer, default 6', max_sources_per_query: 'integer, default 3', topics_csv: "string, default ''"}
+        read_only: false
+        description: Runs a bounded multi-query scrape for a manufacturer and SAVES artifacts on the provider's VPS.
+      - name: health
+        input_schema: {}
+        read_only: true
+        description: Current health and directory layout of the Diagnosta RS MCP service.
+      - name: list_sources
+        input_schema: {}
+        read_only: true
+        description: Top-level directories and searchable files inside the Diagnosta knowledge root.
+      - name: search_notes
+        input_schema: {query: 'string (required)', limit: 'integer, default 8'}
+        read_only: true
+        description: Phrase search over the Diagnosta knowledge base returning file snippets.
+      - name: read_note
+        input_schema: {path: 'string (required)', max_chars: 'integer, default 12000'}
+        read_only: true
+        description: Read a single Diagnosta knowledge document from the private data store.
+      - name: write_intake_note
+        input_schema: {filename: 'string (required)', content: 'string (required)'}
+        read_only: false
+        description: Write a new intake note into the Diagnosta knowledge base.
+      - name: repair_reports_overview
+        input_schema: {limit: 'integer, default 8', status: "string, default 'published'"}
+        read_only: true
+        description: Overview of RS Performance repair reports from the secured Laravel API.
+      - name: search_repair_reports
+        input_schema: {query: "string, default ''", vehicle_make: 'string|null', vehicle_model: 'string|null', fault_code: 'string|null', related_service_slug: 'string|null', status: "string, default 'published'", limit: 'integer, default 8'}
+        read_only: true
+        description: Search repair reports by phrase, vehicle data, fault code or service.
+      - name: get_repair_report
+        input_schema: {identifier: 'string (required) — numeric ID or slug', status: "string, default 'published'"}
+        read_only: true
+        description: Fetch one repair report by numeric ID or slug from the secured Laravel API.
+    resources:
+      - {uri: 'diagnosta://status', name: status_resource, mime_type: text/plain}
+      - {uri: 'diagnosta://sources', name: sources_resource, mime_type: text/plain}
+      - {uri: 'diagnosta://repair-reports/overview', name: repair_reports_overview_resource, mime_type: text/plain}
+    prompts: []
+    observations:
+      - >-
+        The server's own descriptions call three tools "owner-only" or "private" (diagnostic_search_live,
+        diagnostic_deep_research, diagnostic_ingest_brand_knowledge; read_note reads "the private data
+        store") and two tools write to the provider's VPS (write_intake_note,
+        diagnostic_ingest_brand_knowledge). All 14 were listed to an anonymous session; whether
+        tools/call is gated differently was NOT tested — this pass issues no write and no tools/call.
+      - >-
+        mcp.json advertises five tool names for this server (semantic_search, search_notes, health,
+        repair_reports_overview, search_repair_reports); the live server exposes 14. The live list is
+        authoritative and is saved verbatim in mcp/rsperformance-online-mcp-tools.json.
+  - id: rs-knowledge-laravel
+    name: RS Performance Knowledge
+    endpoint: https://mcp.rs3d.pl/laravel/mcp/rs-knowledge
+    transport: streamable-http
+    auth: unknown
+    status: advertised-but-failing
+    probe:
+      method: 'POST initialize; POST tools/list; GET'
+      http_status: 500
+      body: '{"error":"Server Configuration Error: MCP_SERVER_TOKEN is missing."}'
+      server_header: 'x-powered-by: PHP/8.5.9, via Caddy'
+      fetched: '2026-09-19'
+    advertised_tools:
+      - name: search-knowledge-tool
+        description: Semantic search in natural language (Polish/English) across all RS Performance knowledge — services, 12000+ DTC codes, FAQ, blog (from mcp.json; not verifiable live).
+    note: >-
+      This is the endpoint ai-plugin.json (api.type mcp), agents.json (discovery.mcp_endpoint) and the
+      gateway freshness beacon (endpoints.mcp_bridge) all name as THE MCP bridge, and it was down with
+      a server-side configuration error at probe time. The working server is the FastMCP one at the
+      host root, which only mcp.json names.

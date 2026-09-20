@@ -64,5 +64,27 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-RS Performance is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://rsperformance.online/
+RS Performance Sp. z o.o. is a single-location automotive diagnostics and repair workshop at
+Al. Grunwaldzka 303B, Gdańsk, Poland (the former Premio Ring site, rebranded 2021-09-14). Over its
+knowledge base of services, FAQ, repair reports and 12,000+ OBD-II fault codes it publishes an
+unusually complete, entirely anonymous agent surface, profiled here on 2026-09-19:
+
+- **A2A agent** — nine skills, JSON-RPC 2.0 on `POST https://rsperformance.online/` plus HTTP+JSON
+  interfaces; agent card at the canonical `/.well-known/agent-card.json`, graded conformant
+  (`a2a/`). A different, older card is still served at the legacy `/.well-known/agent.json`.
+- **MCP server "Diagnosta RS"** — remote FastMCP at `https://mcp.rs3d.pl/`, 14 tools with input
+  schemas returned to an anonymous `tools/list` (`mcp/`). A second advertised server at
+  `/laravel/mcp/rs-knowledge` returned HTTP 500 at probe time.
+- **REST "AI Gateway"** — OpenAPI 3.1.0 with three operations on `https://ai.rsperformance.online`
+  (`openapi/`), bound to the MCP tools and A2A skills in `mcp/rsperformance-online-tool-crosswalk.yml`.
+- **Discovery** — `llms.txt`, RFC 9116 `security.txt`, an `ai-plugin.json` whose API type is MCP, an
+  `mcp.json`, JSON Feed / Atom change feeds and a DTC JSON feed (`well-known/`, `llms/`, `changelog/`).
+
+No OAuth, no API keys, no published plans: everything is free under a fair-use, attribution-required
+policy with a 60 requests/minute limit signalled by `X-RateLimit-*` headers on the canonical host.
+
+- Website: https://rsperformance.online/
+- Agent docs: https://ai.rsperformance.online/for-agents
+- Agent card: https://rsperformance.online/.well-known/agent-card.json
+- OpenAPI: https://ai.rsperformance.online/.well-known/openapi.json
+- llms.txt: https://rsperformance.online/llms.txt

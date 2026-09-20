@@ -1,0 +1,89 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Cross-cutting behaviour observed on live, unauthenticated calls to the three surfaces on
+  2026-09-19, plus what the OpenAPI, the A2A card and agents.json state. Where a convention is not
+  documented and was not observed, it is recorded as absent rather than assumed.
+description: >-
+  How RS Performance's REST gateway, A2A endpoint and MCP server behave across operations:
+  authentication, idempotency, reversibility, pagination, tracing, versioning, error envelopes and
+  rate-limit signalling.
+base_urls:
+  rest_gateway: https://ai.rsperformance.online
+  a2a_jsonrpc: https://rsperformance.online/
+  mcp: https://mcp.rs3d.pl/
+api_style: >-
+  REST over HTTPS with JSON bodies (gateway), JSON-RPC 2.0 over HTTPS plus HTTP+JSON message
+  endpoints (A2A), MCP Streamable HTTP with SSE responses (MCP).
+authentication:
+  scheme: none — every surface is anonymous by declaration and by test
+  detail: authentication/rsperformance-online-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  docs: null
+  write_surface:
+    - A2A message/send and message/stream (create a task; JSON-RPC id is a correlation id, not an idempotency key)
+    - MCP write_intake_note (creates a note) and diagnostic_ingest_brand_knowledge (saves artifacts on the VPS)
+  note: >-
+    No Idempotency-Key header, no client-supplied request id that dedupes, and no documented replay
+    behaviour on any write. A retried message/send creates a second task. The REST gateway has no
+    writes (semanticSearch is a POST-shaped read), so idempotency is moot there.
+reversibility:
+  grade: documented
+  write_surfaces:
+    - surface: A2A task (created by message/send or message/stream)
+      reversal_operation: tasks/cancel (JSON-RPC; legacy alias CancelTask)
+      reversal_declared_in: a2a/rsperformance-online-agent-card.json supportedInterfaces[3].x_rs_transport_note and the live -32601 method list; the legacy card describes "cancellable short-lived tasks"
+      window: not stated — no document says how long after creation a task can be cancelled or what state blocks cancellation
+      docs: https://rsperformance.online/.well-known/agent-card.json
+    - surface: MCP write_intake_note
+      reversal_operation: none — no delete/undo tool in tools/list
+      window: n/a
+    - surface: MCP diagnostic_ingest_brand_knowledge
+      reversal_operation: none — no tool removes a saved knowledge packet
+      window: n/a
+  note: >-
+    One reversal path exists (tasks/cancel) with no stated window, which grades as documented, not
+    verified. No refund/void semantics apply — the surface takes no payments; booking is a
+    routing/contact skill, not a transaction.
+dry_run_mode:
+  supported: false
+  note: No dry-run, validate-only or sandbox flag on any write.
+pagination:
+  style: none documented
+  rest_gateway: limit parameter only (1-20, default 5) on semanticSearch; no cursor, offset or has_more
+  a2a: tasks/list returned 34 tasks in one response with no paging parameters documented
+  mcp: limit / top_k / max_sources integer caps per tool; no cursor
+field_expansion:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  note: No request-id or trace header observed on any response.
+versioning:
+  scheme: version numbers inside each document; endpoints unversioned
+  detail: lifecycle/rsperformance-online-lifecycle.yml
+error_envelope:
+  rest_gateway: '{"detail": "..."} (FastAPI), application/json'
+  a2a: 'JSON-RPC 2.0 error object {code, message}, HTTP 200'
+  mcp: 'JSON-RPC 2.0 error object with id "server-error", real HTTP status (400/406)'
+  detail: errors/rsperformance-online-problem-types.yml
+rate_limit_signaling:
+  headers_observed: [X-RateLimit-Limit, X-RateLimit-Remaining]
+  where: 'rsperformance.online only (A2A POST /: 60; GET /api/knowledge/search: 30); none on ai.rsperformance.online or mcp.rs3d.pl'
+  exhaustion_status: not observed
+  detail: rate-limits/rsperformance-online-rate-limits.yml
+caching_guidance:
+  agent_card_ttl: '>= 600 s (card x_rs_ai_friendly.rate_limit and security.txt fair-use comment)'
+  well_known_ttl: '>= 600 s (security.txt)'
+  beacon: 'auto.rs3d.pl/webhook/ai-beacon: Cache-Control public, max-age=300; refreshed every 6 h'
+languages:
+  priority: [pl-PL, en]
+  note: Queries accepted in Polish or English (OpenAPI description, card languages_priority); most content and error prose is Polish.
+attribution:
+  required: true
+  format: 'Source: RS Performance (rsperformance.online)'
+  license: content CC-BY-SA-4.0 for AI training per the x-ai-training-policy header and freshness.json; gateway agent.json says attribution is required when citing

@@ -1,0 +1,17 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Registry searches 2026-09-19 — npm (registry.npmjs.org search for "rsperformance", "diagnosta rs mcp"),
+  PyPI (pypi.org/pypi/{rsperformance,diagnosta-rs,rs-performance}/json — all 404), Packagist
+  (search "rsperformance", "rs3d" — no match), GitHub code/org search (no org rsperformance or rs3d
+  reachable; repository search returns unrelated projects) — plus the provider's own manifests, which
+  link no SDK, client library or source repository.
+packages: []
+package_count: 0
+official_sdk_count: 0
+note: >-
+  RS Performance publishes no client libraries. The only tooling the provider mentions is internal:
+  the A2A card's operator block names "npm run a2a:certify or composer a2a:certify" from an operator
+  checkout, and the MCP server is FastMCP (Python) — neither is published to a registry or a public
+  repository. Consumers use the raw JSON-RPC, HTTP+JSON, REST and MCP surfaces directly. No Packages
+  or SDKs pointer is emitted.

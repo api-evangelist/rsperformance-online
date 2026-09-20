@@ -1,0 +1,42 @@
+generated: '2026-09-19'
+method: searched
+source: https://rsperformance.online/feeds/changes.json
+mirror: https://ai.rsperformance.online/feeds/changes.json
+format: JSON Feed 1.1 (application/feed+json), also RSS at https://rsperformance.online/feeds/changes.xml and Atom at https://rsperformance.online/feed.xml
+scope: >-
+  RS Performance publishes no API-release changelog. What it publishes is a dated CHANGES FEED over
+  its public content and knowledge surface — repair reports, blog posts, service and DTC pages — the
+  same corpus the semanticSearch operation, the MCP tools and the A2A skills answer from. Recorded as
+  the provider's change log with that scope stated; API contract versions are tracked in
+  lifecycle/rsperformance-online-lifecycle.yml (OpenAPI 1.2.2 -> 1.3.0 added gatewayAnswerRouting;
+  agent card 2.2.0 -> 2.5.0 grew from 4 to 9 skills).
+scheme: date-stamped (date_modified per item; content_version YYYY-MM-DD in freshness.json)
+current_version: '2026-09-19'   # freshness.json content_version at fetch time
+cadence: daily regeneration (freshness beacon next_update_expected 2026-09-20T04:00:01Z)
+entries:
+  - date: '2026-09-20'
+    kind: content
+    breaking: false
+    highlights:
+      - 'Repair report: Dacia Duster 1.5 dCi — Brak ładowania spowodowany zużyciem akumulatora'
+      - 'Repair report: Volkswagen Caddy IV 2.0 TDI — Usterka układu SCR (AdBlue)'
+      - 'Blog: Zielona strzałka: 100 zł czy 500 zł mandatu?'
+  - date: '2026-09-19'
+    kind: content
+    breaking: false
+    highlights:
+      - 'Blog: Audi A4 B8 2.0 TDI dymi przy przyspieszaniu? Diagnoza i naprawa turbosprężarki'
+      - 'Blog: Golf VI 1.6 TDI szarpie przy przyspieszaniu?'
+      - 'Repair report: Fiat Fiorino 1.3 MultiJet — SCR / AdBlue, P13EF i P2BAF pod obciążeniem'
+  - date: '2026-09-19'
+    kind: contract
+    breaking: false
+    highlights:
+      - OpenAPI on ai.rsperformance.online is 1.3.0 (adds GET /.well-known/answer-routing.json, operationId gatewayAnswerRouting); the apex copy is still 1.2.2
+    source: openapi/_original/
+api_contract_history_known:
+  - {document: agent-card.json, version: 2.5.0, note: 'card description says "April 2026+"; skill climate-hvac-knowledge says "public July 2026 lane"; skill matrix last_audit 2026-05-18'}
+  - {document: agent.json (legacy), version: 2.2.0}
+  - {document: ai-resources.json, version: '2026-04-13'}
+  - {document: openapi.json, version: '1.3.0 (gateway) / 1.2.2 (apex)'}
+  - {document: MCP serverInfo, version: 0.3.0}

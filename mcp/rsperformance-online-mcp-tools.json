@@ -1,0 +1,523 @@
+{
+  "_provenance": {
+    "fetched": "2026-09-19",
+    "endpoint": "https://mcp.rs3d.pl/",
+    "transport": "streamable-http",
+    "method": "POST initialize -> notifications/initialized -> tools/list, resources/list, prompts/list with Mcp-Session-Id",
+    "http_status": 200,
+    "content_type": "text/event-stream",
+    "note": "Verbatim JSON-RPC result payloads as returned by the live server; nothing added or edited."
+  },
+  "initialize": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "experimental": {},
+      "prompts": {
+        "listChanged": true
+      },
+      "resources": {
+        "subscribe": false,
+        "listChanged": true
+      },
+      "tools": {
+        "listChanged": true
+      },
+      "extensions": {
+        "io.modelcontextprotocol/ui": {}
+      }
+    },
+    "serverInfo": {
+      "name": "Diagnosta RS",
+      "version": "0.3.0",
+      "websiteUrl": "https://mcp.rs3d.pl"
+    },
+    "instructions": "Prywatny serwer MCP warsztatu RS Performance w Gdańsku. Używaj semantic_search do znajdowania informacji o usługach, cenach, godzinach, FAQ. Używaj search_notes do przeszukiwania prywatnych notatek diagnostycznych. Używaj repair_reports do pracy z raportami napraw. ZASADA: Nigdy nie podawaj cen bez diagnostyki. Motto: Najpierw weryfikacja i diagnoza, potem wycena."
+  },
+  "tools": [
+    {
+      "name": "semantic_search",
+      "description": "Search the RS Performance knowledge base using AI semantic search.\n\n\n\n\n\n\n\n\n\n\n\nReturns the most relevant documents about services, FAQ, business info, blog posts, and DTC codes.\n\n\n\n\n\n\n\n\n\n\n\nUse doc_type to filter: 'service', 'blog', 'dtc', 'business', 'faq', or '' for all.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "default": 5,
+            "type": "integer"
+          },
+          "doc_type": {
+            "default": "",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "diagnostic_search",
+      "description": "Compatibility bridge for legacy Diagnosta clients expecting diagnostic_search.\n\n\nFor end-user replies, prefer `assistant_answer`, `confidence`, `recommended_next_steps`, and `ask_back`.\n\n\nUse raw `hits` only as evidence/debug, not as the main final response.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "top_k": {
+            "default": 5,
+            "type": "integer"
+          },
+          "use_dynamic": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "diagnostic_web_research",
+      "description": "Search the live web through local SearXNG and extract readable evidence with Trafilatura.\n\nPrefer this when the query needs fresh public context or forum/TSB-style evidence from the internet.\nFor end-user replies, prefer `assistant_answer`, `confidence`, `recommended_next_steps`, and `ask_back`.\nUse raw `hits` only as evidence/debug.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "default": 3,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "diagnostic_search_live",
+      "description": "Combine local Diagnosta knowledge with live web research.\n\nUses canonical DTC JSON, private notes, Qdrant retrieval, local SearXNG, and Trafilatura extraction.\nPrefer this for owner-only deep diagnosis when local knowledge should be augmented by current public web sources.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "top_k": {
+            "default": 5,
+            "type": "integer"
+          },
+          "web_limit": {
+            "default": 3,
+            "type": "integer"
+          },
+          "use_dynamic": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "diagnostic_deep_research",
+      "description": "Run owner-only deep internet research for Diagnosta.\n\nUses local SearXNG discovery with a separate deep-ingest worker that can enrich from\nHTML pages, documents, and YouTube transcripts. Prefer this when you explicitly want\nbroader internet evidence beyond the standard live web search.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_sources": {
+            "default": 3,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "diagnostic_ingest_brand_knowledge",
+      "description": "Collect and save a brand knowledge packet on the VPS for private Diagnosta use.\n\nUse this when the owner says things like \"pobierz dane o Fiat\" or asks to gather\na broader research pack for a manufacturer. This tool does not promise \"the whole internet\".\nIt runs a bounded multi-query scrape, saves artifacts on the VPS, and returns the saved paths.\n`topics_csv` is optional and can narrow the batch, e.g. `Multijet,Body Computer,CAN`.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "brand": {
+            "type": "string"
+          },
+          "max_queries": {
+            "default": 6,
+            "type": "integer"
+          },
+          "max_sources_per_query": {
+            "default": 3,
+            "type": "integer"
+          },
+          "topics_csv": {
+            "default": "",
+            "type": "string"
+          }
+        },
+        "required": [
+          "brand"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "health",
+      "description": "Return the current health and directory layout of the Diagnosta RS MCP service.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "list_sources",
+      "description": "List the top-level directories and searchable files inside the Diagnosta knowledge root.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "search_notes",
+      "description": "Search the Diagnosta knowledge base for a phrase and return matching file snippets.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "default": 8,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "read_note",
+      "description": "Read a single Diagnosta knowledge document from the private data store.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "max_chars": {
+            "default": 12000,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "write_intake_note",
+      "description": "Write a new intake note into the Diagnosta knowledge base.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "filename": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename",
+          "content"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "repair_reports_overview",
+      "description": "Fetch an overview of RS Performance repair reports from the secured Laravel API.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 8,
+            "type": "integer"
+          },
+          "status": {
+            "default": "published",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "search_repair_reports",
+      "description": "Search RS Performance repair reports by phrase, vehicle data, fault code or service.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "default": "",
+            "type": "string"
+          },
+          "vehicle_make": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "vehicle_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "fault_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "related_service_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "status": {
+            "default": "published",
+            "type": "string"
+          },
+          "limit": {
+            "default": 8,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "get_repair_report",
+      "description": "Fetch one repair report by numeric ID or slug from the secured Laravel API.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "identifier": {
+            "type": "string"
+          },
+          "status": {
+            "default": "published",
+            "type": "string"
+          }
+        },
+        "required": [
+          "identifier"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "status_resource",
+      "uri": "diagnosta://status",
+      "mimeType": "text/plain",
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "sources_resource",
+      "uri": "diagnosta://sources",
+      "mimeType": "text/plain",
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "repair_reports_overview_resource",
+      "uri": "diagnosta://repair-reports/overview",
+      "mimeType": "text/plain",
+      "_meta": {
+        "fastmcp": {
+          "tags": []
+        }
+      }
+    }
+  ],
+  "prompts": []
+}

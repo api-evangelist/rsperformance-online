@@ -1,0 +1,48 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Response headers observed on live unauthenticated requests 2026-09-19, cross-checked against the
+  one place the provider states a limit in words (agents.json rate_limits) and the A2A card's
+  x_rs_ai_friendly block ("fair-use only").
+docs: https://rsperformance.online/.well-known/agents.json
+limit_count: 2
+limits:
+  - scope: per-client (keying not stated; Laravel throttle behaviour implies per IP)
+    surface: A2A JSON-RPC — POST https://rsperformance.online/
+    window: 1 minute
+    limit: 60
+    burst: null
+    documented: 'agents.json rate_limits.requests_per_minute: 60 ("Soft fair-use limit on shared host")'
+    observed_headers:
+      X-RateLimit-Limit: '60'
+      X-RateLimit-Remaining: '59'
+    status_on_exhaustion: not observed
+    retry_after: not observed
+  - scope: per-client
+    surface: REST apex — GET https://rsperformance.online/api/knowledge/search
+    window: not stated (Laravel-style per-minute headers)
+    limit: 30
+    burst: null
+    documented: no — header only
+    observed_headers:
+      X-RateLimit-Limit: '30'
+      X-RateLimit-Remaining: '27'
+    status_on_exhaustion: not observed
+    retry_after: not observed
+unmetered_or_unsignalled:
+  - surface: REST gateway — POST https://ai.rsperformance.online/api/search
+    observed_headers: none (no X-RateLimit-* or RateLimit-* on a 200)
+    documented: 'no numeric limit; the provider steers RAG sweeps here ("Prefer VPS gateway ... for RAG sweeps", security.txt)'
+  - surface: MCP — https://mcp.rs3d.pl/
+    observed_headers: none
+    documented: no
+  - surface: static well-known documents and feeds
+    documented: 'cache TTL guidance only — >= 600 s on /.well-known/* (security.txt, agent card); beacon Cache-Control public, max-age=300'
+headers:
+  family: X-RateLimit-* (de facto; not the IETF RateLimit-* draft)
+  returned: [X-RateLimit-Limit, X-RateLimit-Remaining]
+  not_returned: [X-RateLimit-Reset, RateLimit-Policy, Retry-After]
+note: >-
+  The runtime signal exists only on the canonical host. An agent calling the gateway or the MCP
+  server gets no header telling it how close it is to a limit and must rely on the prose fair-use
+  policy. Exhaustion behaviour (429 or otherwise) was deliberately not provoked.

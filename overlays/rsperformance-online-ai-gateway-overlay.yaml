@@ -1,0 +1,75 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for the RS Performance AI Gateway OpenAPI
+  version: 1.0.0
+  x-generated: '2026-09-19'
+  x-method: generated
+  x-source: >-
+    Enhancements API Evangelist recorded while profiling RS Performance; applies to
+    openapi/rsperformance-online-ai-gateway-openapi.yml (verbatim from
+    https://ai.rsperformance.online/.well-known/openapi.json, info.version 1.3.0). The original is
+    never mutated. Every addition below is grounded in a live observation or a provider document
+    named in the action.
+extends: ../openapi/rsperformance-online-ai-gateway-openapi.yml
+actions:
+  - target: $.info
+    description: Link the contract to the provider's own agent documentation and to the crosswalk that binds its operations to the MCP tools and A2A skills.
+    update:
+      x-llms-txt: https://rsperformance.online/llms.txt
+      x-agent-card: https://rsperformance.online/.well-known/agent-card.json
+      x-mcp-servers: https://rsperformance.online/.well-known/mcp.json
+      x-tool-crosswalk: ../mcp/rsperformance-online-tool-crosswalk.yml
+      x-canonical-host-copy: https://rsperformance.online/.well-known/openapi.json   # info.version 1.2.2, lacks gatewayAnswerRouting
+  - target: $
+    description: Declare the anonymous access model explicitly (the source declares no securitySchemes and no security requirement; authentication/rsperformance-online-authentication.yml).
+    update:
+      security: []
+      x-authentication: none — public fair-use surface (agents.json authentication.type none)
+      externalDocs:
+        description: RS Performance AI Fast Lane for Agents (preferred fetch order and citation policy)
+        url: https://ai.rsperformance.online/for-agents
+  - target: $
+    description: Add tags so the three operations group by concern.
+    update:
+      tags:
+        - name: Search
+          description: Answer-first semantic retrieval over the RS Performance knowledge plane (Qdrant).
+        - name: Discovery
+          description: Gateway freshness and answer-routing manifests under /.well-known/.
+  - target: $.paths['/api/search'].post
+    description: Tag, cross-reference the MCP tools that share this operation, and record the observed wrong-method behaviour.
+    update:
+      tags: [Search]
+      x-mcp-tools: [diagnostic_search, semantic_search]
+      x-a2a-skills: [gateway-semantic-routing, dtc-lookup]
+      x-observed: 'POST {"query":"P0299","limit":2} returned 200 with hits[].dtc_codes ["P0299"], matched via source_type canonical_dtc; no rate-limit headers on the response.'
+  - target: $.paths['/api/search'].post.responses
+    description: Document the response returned when the operation is called with GET (observed 2026-09-19).
+    update:
+      '405':
+        description: 'Method Not Allowed — GET /api/search?q=... returns {"detail":"Method Not Allowed"}; the operation is POST-only.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                detail: {type: string}
+              required: [detail]
+  - target: $.paths['/.well-known/freshness.json'].get
+    description: Tag and describe the response body the source leaves unschematised (fields observed live).
+    update:
+      tags: [Discovery]
+      x-mcp-tools: [health]
+      x-observed-fields: [last_updated, content_version, next_update_expected, invitation, training_policy, gateway, canonical, deep_pages, endpoints, sitemap_lastmod, beacon_refreshed_by]
+  - target: $.paths['/.well-known/answer-routing.json'].get
+    description: Tag and describe the response body (top-level keys observed live; 326,500 bytes).
+    update:
+      tags: [Discovery]
+      x-observed-fields: [generated_at, mode, canonical_source_of_truth, source_manifest, canonical_priority_packet, canonical_priority_feed, blocked_user_agent_families, homepage_resolution_rule, clusters, exact_lookup, top_urls, entrypoint_strategy, rescue_strategy]
+  - target: $.paths
+    description: Record the public apex search route the provider documents in llms.txt but omits from this contract (not added as a path — it is on a different host; noted so the gap is visible).
+    update:
+      x-undocumented-related-routes:
+        - method: GET
+          url: https://rsperformance.online/api/knowledge/search?q={query}&limit={n}
+          observed: '200 application/json, X-RateLimit-Limit 30; body {query, collection rs_dynamic_knowledge, source qdrant, count, results[]}'

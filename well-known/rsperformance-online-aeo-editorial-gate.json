@@ -1,0 +1,94 @@
+{
+    "version": "2026-04-11",
+    "generated_at": "2026-09-20T03:00:24+02:00",
+    "goal": "No important RS Performance content ships without passing an explicit AEO gate for answer quality, provenance, freshness, entity clarity, and discovery alignment.",
+    "global_checks": {
+        "answer_first_block": "The page must expose a fast answer path that an AI agent can extract in one pass.",
+        "provenance": "The source of the answer must be explicit and tied to a real source of truth.",
+        "freshness": "The page or export must expose real freshness metadata tied to a real update workflow.",
+        "entity_clarity": "The main entity, intent and canonical routing must be unambiguous.",
+        "discovery_alignment": "The page must be reachable from curated AI discovery surfaces and machine-readable exports.",
+        "inclusive_operator_hospitality": "Published surfaces must not imply blocking of legitimate AI operators that appear in the live ai_agents allowlists; rescue flows are for edge misclassification, not default family bans."
+    },
+    "content_types": {
+        "services": {
+            "must_have": [
+                "answer_first_block",
+                "provenance",
+                "freshness",
+                "entity_clarity",
+                "discovery_alignment"
+            ],
+            "operator_questions": [
+                "Does the page answer what the workshop does, for whom and when to use this service?",
+                "Does it clearly say what evidence or operational source backs the page?",
+                "Does it expose a real freshness signal, not a cosmetic timestamp?"
+            ]
+        },
+        "problems": {
+            "must_have": [
+                "answer_first_block",
+                "provenance",
+                "freshness",
+                "entity_clarity",
+                "discovery_alignment"
+            ],
+            "operator_questions": [
+                "Does the page route from symptom to likely repair family without overclaiming certainty?",
+                "Does it distinguish symptom intent from service intent clearly?",
+                "Does it point to the next canonical diagnostic surface?"
+            ]
+        },
+        "repair_reports": {
+            "must_have": [
+                "answer_first_block",
+                "provenance",
+                "freshness",
+                "entity_clarity",
+                "discovery_alignment"
+            ],
+            "operator_questions": [
+                "Does the report expose measurements, root cause and corrective action clearly?",
+                "Is the evidence type explicit and reviewable by an operator?",
+                "Does the report strengthen related DTC, service or symptom surfaces?"
+            ]
+        },
+        "blog": {
+            "must_have": [
+                "answer_first_block",
+                "provenance",
+                "freshness",
+                "entity_clarity",
+                "discovery_alignment"
+            ],
+            "operator_questions": [
+                "Does the article answer the topic early before broad explanation starts?",
+                "Is the article positioned as explainer/editorial content rather than transactional service copy?",
+                "Does it route to the right service, problem, report or DTC surface when intent becomes specific?"
+            ]
+        },
+        "dtc": {
+            "must_have": [
+                "answer_first_block",
+                "provenance",
+                "freshness",
+                "entity_clarity",
+                "discovery_alignment"
+            ],
+            "operator_questions": [
+                "Does the page explain the fault code, likely causes and next diagnostic move in one pass?",
+                "Is manufacturer or family context explicit when relevant?",
+                "Does it point to evidence-rich repair reports or strongest related landings?"
+            ]
+        }
+    },
+    "agent_scoring_order": [
+        "Is the page useful to an AI agent in one pass?",
+        "Is the answer explicit and fast to extract?",
+        "Is provenance explicit?",
+        "Is freshness explicit?",
+        "Is the entity context unambiguous?",
+        "Is the page linked from curated discovery surfaces?",
+        "Does it avoid thin, duplicate or noisy AI-facing content?"
+    ]
+}

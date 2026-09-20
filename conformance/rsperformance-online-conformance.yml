@@ -1,0 +1,81 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live probes of the A2A endpoint (POST https://rsperformance.online/), the MCP server
+  (https://mcp.rs3d.pl/), the well-known surface on four hosts, and the OpenAPI at
+  https://ai.rsperformance.online/.well-known/openapi.json, 2026-09-19; plus the contract content in
+  openapi/ and a2a/. No conformance below rests on a marketing claim.
+standards:
+  - id: a2a-agent-card
+    conforms: true
+    evidence: a2a/rsperformance-online-agent-card.json — capabilities is an object, protocolVersion "0.3.0" present, skills is an array of 9; graded conformant in a2a/rsperformance-online-a2a.yml
+  - id: json-rpc-2.0
+    conforms: true
+    evidence: 'POST https://rsperformance.online/ with an unknown method returned {"jsonrpc":"2.0","id":1,"error":{"code":-32601,"message":"Unknown method ..."}} — the standard method-not-found code and envelope'
+  - id: mcp-2025-06-18
+    conforms: true
+    evidence: initialize on https://mcp.rs3d.pl/ returned protocolVersion "2025-06-18" with tools/resources/prompts capabilities; tools/list returned 14 tools each carrying a JSON Schema inputSchema (mcp/rsperformance-online-mcp-tools.json)
+  - id: rfc9116-security-txt
+    conforms: true
+    evidence: /.well-known/security.txt on rsperformance.online and ai.rsperformance.online — Contact, Expires (2027-09-20, within one year of generation), Canonical, Preferred-Languages present (well-known/rsperformance-online-security.txt)
+  - id: rfc8615-well-known
+    conforms: true
+    evidence: security.txt, ai-plugin.json, agent-card.json, agent.json, openapi.json and mcp.json all served under /.well-known/ with correct media types (well-known/rsperformance-online-well-known.yml)
+  - id: openapi-3.1
+    conforms: true
+    evidence: openapi/_original/rsperformance-online-ai-gateway-openapi.json — openapi "3.1.0", info, servers, paths with operationIds and JSON Schema 2020-12 style nullable unions (type [string, null])
+  - id: llms-txt
+    conforms: true
+    evidence: https://rsperformance.online/llms.txt (and the gateway copy) — H1, blockquote summary, H2 sections of markdown links with descriptions, an Optional section (llms/rsperformance-online-llms.txt)
+  - id: json-feed-1.1
+    conforms: true
+    evidence: https://rsperformance.online/feeds/changes.json — version https://jsonfeed.org/version/1.1, served as application/feed+json
+  - id: schema-org-localbusiness
+    conforms: true
+    evidence: homepage JSON-LD @graph with AutoRepair/LocalBusiness, PostalAddress, GeoCoordinates, OpeningHoursSpecification, OfferCatalog, FAQPage and a ReserveAction potentialAction
+  - id: oauth2
+    conforms: false
+    evidence: no securitySchemes in the OpenAPI, securitySchemes {} in the agent card, no /.well-known/oauth-authorization-server on any of the four hosts
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration 404 on all four hosts
+  - id: rfc9728-protected-resource-metadata
+    conforms: false
+    evidence: /.well-known/oauth-protected-resource 404 on rsperformance.online, ai.rsperformance.online and mcp.rs3d.pl
+  - id: rfc9727-api-catalog
+    conforms: false
+    evidence: /.well-known/api-catalog 404 on all hosts
+  - id: apis-json
+    conforms: false
+    evidence: /apis.json, /apis.yml and /.well-known/apis.json 404 on all hosts
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'errors are JSON-RPC error objects (A2A, MCP) or a FastAPI {"detail": "..."} body (gateway 405); no application/problem+json observed (errors/rsperformance-online-problem-types.yml)'
+  - id: rfc8594-sunset-deprecation-headers
+    conforms: false
+    evidence: no Deprecation or Sunset header on any response; legacy JSON-RPC aliases are announced only inside the -32601 error message
+  - id: idempotency-key
+    conforms: false
+    evidence: no Idempotency-Key header or equivalent documented or declared on any write surface (conventions/rsperformance-online-conventions.yml)
+  - id: rfc6585-rate-limit-headers
+    conforms: true
+    evidence: 'POST https://rsperformance.online/ returned X-RateLimit-Limit: 60 / X-RateLimit-Remaining: 59; GET /api/knowledge/search returned X-RateLimit-Limit: 30 — the de facto X-RateLimit-* header family (draft-ietf-httpapi-ratelimit-headers RateLimit-* is NOT used)'
+domain_standards:
+  - id: sae-j2012-obd-ii-dtc
+    conforms: true
+    evidence: >-
+      The contract uses the OBD-II diagnostic trouble code identifier scheme (SAE J2012 / ISO 15031-6,
+      five-character P/B/C/U codes) as a first-class field: the OpenAPI response schema for
+      semanticSearch declares matched_dtc_codes[] and hits[].dtc_codes[]
+      (openapi/rsperformance-online-ai-gateway-openapi.yml), the A2A skill dtc-lookup is tagged
+      OBD-II, P-codes, C-codes, B-codes, U-codes, the MCP tool search_repair_reports takes a
+      fault_code parameter, and the live gateway returned matched code P0299 for that query.
+      The provider also publishes the codes as a 5.6 MB JSON feed at /feeds/dtc.json.
+    scope: identifier scheme carried in contract fields, not a claim of certification
+compliance_program:
+  published: false
+  note: >-
+    No SOC 2 / ISO 27001 / trust-center style compliance program is published for the API surface.
+    The workshop's JSON-LD lists DEKRA, Bosch Car Service and Premio (Continental) credentials —
+    automotive-trade certifications for the physical workshop, not information-security attestations,
+    so no Compliance pointer is emitted.

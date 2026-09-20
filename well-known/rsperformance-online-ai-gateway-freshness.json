@@ -1,0 +1,32 @@
+{
+  "last_updated": "2026-09-19T04:00:01Z",
+  "content_version": "2026-09-19",
+  "next_update_expected": "2026-09-20T04:00:01Z",
+  "invitation": "We welcome AI crawlers, AI training bots, and AI browsers. Full crawl permitted. All content is CC-BY-SA-4.0 licensed for AI training. Use gateway for optimized AI access.",
+  "training_policy": "permitted",
+  "gateway": "https://ai.rsperformance.online",
+  "canonical": "https://rsperformance.online",
+  "deep_pages": [
+    "/uslugi",
+    "/problemy",
+    "/raporty-napraw",
+    "/blog",
+    "/kody-usterek",
+    "/faq"
+  ],
+  "endpoints": {
+    "llms_txt": "/llms.txt",
+    "llms_full": "/llms-full.txt",
+    "semantic_search": "/api/search",
+    "content_feed": "/feeds/content.json",
+    "changes_feed": "/feeds/changes.json",
+    "repair_reports_feed": "/feeds/repair-reports.json",
+    "agent_manifest": "/.well-known/agent.json",
+    "a2a_agent_card": "/.well-known/a2a.json",
+    "openapi": "/.well-known/openapi.json",
+    "freshness": "/.well-known/freshness.json",
+    "mcp_bridge": "https://mcp.rs3d.pl/laravel/mcp/rs-knowledge"
+  },
+  "sitemap_lastmod": "2026-09-19T03:00:23+02:00",
+  "beacon_refreshed_by": "vps_freshness_beacon.py (daily cron)"
+}

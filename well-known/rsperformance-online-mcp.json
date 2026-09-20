@@ -1,0 +1,27 @@
+{
+    "mcp_version": "1.0",
+    "servers": [
+        {
+            "name": "Diagnosta RS",
+            "url": "https://mcp.rs3d.pl/",
+            "transport": "streamable-http",
+            "description": "Full RS Performance MCP server — services, FAQ, DTC codes, blog, diagnostic notes, repair reports. Semantic search powered by Qdrant vector DB with 2168 knowledge documents.",
+            "tools": {
+                "semantic_search": "AI-powered semantic search across 2168+ knowledge documents (services, DTC codes, FAQ, blog)",
+                "search_notes": "Full-text search in diagnostic notes",
+                "health": "Service health and Qdrant status",
+                "repair_reports_overview": "Published repair case studies",
+                "search_repair_reports": "Search repair reports by vehicle/fault code"
+            }
+        },
+        {
+            "name": "RS Performance Knowledge",
+            "url": "https://mcp.rs3d.pl/laravel/mcp/rs-knowledge",
+            "transport": "streamable-http",
+            "description": "Laravel MCP server with SearchKnowledgeTool — semantic search over RS Performance knowledge base (services, DTC fault codes, FAQ, blog articles). Powered by fastembed + Qdrant (2168 docs, 384-dim vectors).",
+            "tools": {
+                "search-knowledge-tool": "Semantic search in natural language (Polish/English) across all RS Performance knowledge — services, 12000+ DTC codes, FAQ, blog"
+            }
+        }
+    ]
+}

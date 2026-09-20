@@ -1,0 +1,56 @@
+generated: '2026-09-19'
+method: searched
+source: openapi/rsperformance-online-ai-gateway-openapi.yml (heuristic classification by derive-agentic-access.py,
+  then curated against the OpenAPI operation descriptions and the live probe on 2026-09-19)
+description: 'Recommended x-agentic-access execution contracts, classified heuristically from the OpenAPI. A governance
+  starting point for exposing this API to AI agents — review and bind audience per deployment. See research/curity/agentic-governance/.
+  Curated 2026-09-19: all three operations are reads; the surface has no write, so no human-in-the-loop trigger
+  applies. Note the provider''s OTHER agent surfaces do have writes outside this OpenAPI — A2A message/send creates
+  a task and the MCP tools write_intake_note and diagnostic_ingest_brand_knowledge write to the provider''s store
+  (see mcp/ and conventions/).'
+summary:
+  operations: 3
+  by_action_class:
+    connected: 3
+  by_consequence:
+    read: 3
+  human_in_the_loop_required: 0
+operations:
+- path: /api/search
+  method: post
+  operationId: semanticSearch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    audience: null
+    token:
+      max-ttl: 3600
+    escalation:
+      human-in-the-loop: none
+      triggers: []
+    audit: recommended
+  x-curation-note: Reclassified from acting/write to connected/read. The heuristic keyed on the POST verb, but the
+    provider's OpenAPI describes the operation as retrieval ('Runs answer-first retrieval across services, symptom
+    pages, DTC references, repair reports, and editorial content'), its request body carries only a query and a
+    limit, and the live call created no resource. It is a POST-shaped read.
+- path: /.well-known/freshness.json
+  method: get
+  operationId: gatewayFreshness
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /.well-known/answer-routing.json
+  method: get
+  operationId: gatewayAnswerRouting
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none

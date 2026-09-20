@@ -1,0 +1,26 @@
+generated: '2026-09-19'
+method: searched
+source: https://rsperformance.online/.well-known/agents.json
+corroborating:
+  - https://rsperformance.online/.well-known/agent-card.json   # x_rs_ai_friendly_2026_04: public true, auth_required false, rate_limit "fair-use only"
+  - https://rsperformance.online/.well-known/security.txt      # "Public surfaces, no auth required"
+  - https://ai.rsperformance.online/for-agents                 # "Commercial and citation policy: Attribution is expected."
+plan_count: 0
+pricing_url: null
+free_tier:
+  exists: true
+  name: public fair-use
+  price: 0
+  currency: null
+  billing_period: null
+  included_quota: soft fair-use limit of 60 requests per minute on the canonical host (agents.json rate_limits); no quota stated for the gateway or MCP
+  conditions:
+    - Attribution required when citing ("Source: RS Performance (rsperformance.online)")
+    - Cache /.well-known/* for at least 600 seconds
+    - Prefer https://ai.rsperformance.online/api/search for RAG-style sweeps
+note: >-
+  RS Performance publishes no paid API plans, no pricing page and no enterprise tier: the entire
+  agent surface (REST gateway, A2A, MCP) is free and anonymous under a fair-use policy. The
+  workshop's commercial pricing is for vehicle repair, and its stated policy — repeated in llms.txt,
+  the MCP server instructions and the A2A card — is that no final repair price is quoted before an
+  on-site diagnosis, so there is no price list to record either. /cennik returns 404.

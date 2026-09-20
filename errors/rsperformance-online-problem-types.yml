@@ -1,0 +1,74 @@
+generated: '2026-09-19'
+method: probed
+format: mixed
+source: >-
+  Observed on live, unauthenticated requests 2026-09-19 to the A2A endpoint (POST https://rsperformance.online/),
+  the HTTP+JSON interfaces, the AI gateway (https://ai.rsperformance.online/api/search) and the MCP server
+  (https://mcp.rs3d.pl/). The OpenAPI declares only 200 responses for its three operations, so nothing
+  below is derived from the spec; every entry is a response that was actually returned. No
+  application/problem+json (RFC 9457) was observed anywhere.
+envelopes:
+  a2a_jsonrpc:
+    media_type: application/json
+    shape: '{"jsonrpc":"2.0","id":<id>,"error":{"code":<int>,"message":<string>}}'
+    note: Standard JSON-RPC 2.0 error object; HTTP status stays 200 for protocol-level errors. The card's operator block says HTTP 404 is used for an unknown task where applicable (not exercised — no task id was fabricated).
+  gateway_fastapi:
+    media_type: application/json
+    shape: '{"detail":<string>}'
+    note: FastAPI/Starlette default error body on ai.rsperformance.online.
+  mcp_jsonrpc:
+    media_type: application/json
+    shape: '{"jsonrpc":"2.0","id":"server-error","error":{"code":<int>,"message":<string>}}'
+    note: FastMCP transport-level errors are returned with a real HTTP error status (400/406) and id "server-error".
+  laravel_html:
+    media_type: text/html
+    note: Unknown paths on rsperformance.online return a 6,586-byte Laravel "Not Found" HTML page with HTTP 404; wrong-method requests return a Symfony "Method Not Allowed" HTML page with HTTP 405.
+problems:
+  - status: 200
+    surface: a2a
+    code: -32601
+    title: Unknown method
+    detail_observed: 'Unknown method "agent/ping". Supported: message/send, message/stream, tasks/get, tasks/list, tasks/cancel, tasks/subscribe; legacy aliases: SendMessage, SendStreamingMessage, GetTask, ListTasks, CancelTask, SubscribeToTask.'
+    remediation: Use one of the six listed JSON-RPC methods; the message enumerates the live surface, which is the only place the legacy aliases are documented.
+    source_probe: POST https://rsperformance.online/ {"method":"agent/ping"}
+  - status: 405
+    surface: a2a-http-json
+    title: Method Not Allowed
+    detail_observed: Symfony HTML error page on GET https://rsperformance.online/message:send
+    remediation: POST a JSON message envelope to message:send / message:stream; GET is only valid on /tasks.
+  - status: 405
+    surface: gateway
+    title: Method Not Allowed
+    detail_observed: '{"detail":"Method Not Allowed"} on GET https://ai.rsperformance.online/api/search?q=...'
+    remediation: 'POST application/json {"query": "...", "limit": n} as the OpenAPI operation semanticSearch declares.'
+    source_operation: openapi/rsperformance-online-ai-gateway-openapi.yml#semanticSearch
+  - status: 404
+    surface: website
+    title: Not Found
+    detail_observed: Laravel HTML 404 page (6,586 bytes) for /openapi.json, /apis.json, /mcp, /a2a, /.well-known/openid-configuration and other unknown paths
+    remediation: The machine-readable documents live under /.well-known/ and /feeds/ — see llms.txt and well-known/rsperformance-online-well-known.yml.
+  - status: 403
+    surface: website
+    title: Brak dostępu do strony (access denied)
+    detail_observed: hosting-provider HTML 403 page on GET https://rsperformance.online/api/
+    remediation: The /api/ directory index is not a resource; the only public apex API route observed is GET /api/knowledge/search?q=&limit=.
+  - status: 400
+    surface: mcp
+    code: -32600
+    title: 'Bad Request: Missing session ID'
+    detail_observed: returned to tools/list sent without the Mcp-Session-Id header
+    remediation: Call initialize first, read the Mcp-Session-Id response header, send notifications/initialized, then carry the header on every request.
+  - status: 406
+    surface: mcp
+    code: -32600
+    title: 'Not Acceptable: Client must accept text/event-stream'
+    detail_observed: returned to a GET / POST without Accept text/event-stream
+    remediation: 'Send Accept: application/json, text/event-stream.'
+  - status: 500
+    surface: mcp-secondary
+    title: 'Server Configuration Error: MCP_SERVER_TOKEN is missing.'
+    detail_observed: '{"error":"Server Configuration Error: MCP_SERVER_TOKEN is missing."} on every request to https://mcp.rs3d.pl/laravel/mcp/rs-knowledge (initialize, tools/list, GET)'
+    remediation: Provider-side misconfiguration; use the FastMCP server at https://mcp.rs3d.pl/ instead.
+not_observed:
+  - 429 (rate-limit exhaustion) — X-RateLimit-Remaining was decremented but the limit was never reached; the exhaustion status and any Retry-After header are unverified.
+  - 401 / 403 on any A2A or MCP method — the surface is anonymous.

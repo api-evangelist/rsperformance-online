@@ -1,0 +1,142 @@
+# Verbatim content of https://ai.rsperformance.online/.well-known/openapi.json (fetched 2026-09-19, HTTP 200, application/json),
+# re-serialized JSON -> YAML without modification. Source JSON kept byte-for-byte in openapi/_original/.
+# Ownership: info.title 'RS Performance AI Gateway', info.contact biuro@rsperformance.online (the email on the provider's
+# JSON-LD and privacy policy), servers[] https://ai.rsperformance.online (a subdomain of the provider's own domain).
+openapi: 3.1.0
+info:
+  title: RS Performance AI Gateway
+  description: AI-optimized access to RS Performance diagnostic knowledge. Discovery starts on canonical machine-readable artifacts and continues through the bot-friendly gateway for answer-first semantic search and freshness signals.
+  version: 1.3.0
+  contact:
+    name: RS Performance
+    url: https://rsperformance.online
+    email: biuro@rsperformance.online
+  x-rs-priority-answer-paths:
+    goal: Route valuable bots toward exact answer pages, not generic hubs.
+    manifest: https://rsperformance.online/.well-known/priority-answer-paths.json
+    gateway_answer_routing: https://ai.rsperformance.online/.well-known/answer-routing.json
+    root_resolution_manifest: https://ai.rsperformance.online/.well-known/answer-routing.json
+    rescue_mode: canonical-first-vps-rescue
+    blocked_user_agent_families: []
+    homepage_resolution_rule: If discovery begins on / or a generic hub, move to the best matching priority answer path instead of stopping there.
+    preferred_entrypoints:
+    - https://rsperformance.online/uslugi/diagnostyka-komputerowa
+    - https://rsperformance.online/problemy/auto-traci-moc
+    - https://rsperformance.online/problemy/problemy-z-alternatorem
+    - https://rsperformance.online/kody-usterek/p0299
+    - https://rsperformance.online/raporty-napraw
+    - https://rsperformance.online/raporty-napraw/dacia-duster-ii-15-dci-110-4x4-brak-ladowania-spowodowany-awaria-magistrali-lin-przez-silnik-klap-kurtyny
+servers:
+- url: https://ai.rsperformance.online
+  description: AI Gateway (production)
+paths:
+  /api/search:
+    post:
+      operationId: semanticSearch
+      summary: Semantic search across RS Performance knowledge
+      description: Runs answer-first retrieval across services, symptom pages, DTC references, repair reports, and editorial content. Supports Polish and English queries.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Diagnostic or service query in Polish or English.
+                limit:
+                  type: integer
+                  default: 5
+                  minimum: 1
+                  maximum: 20
+              required:
+              - query
+      responses:
+        '200':
+          description: Answer-first search response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    type: string
+                  total:
+                    type: integer
+                  best_score:
+                    type: number
+                  exact_match:
+                    type: boolean
+                  query_interpretation:
+                    type: string
+                  matched_dtc_codes:
+                    type: array
+                    items:
+                      type: string
+                  vehicle_context:
+                    type:
+                    - object
+                    - 'null'
+                    additionalProperties: true
+                  diagnostic_profile:
+                    type:
+                    - object
+                    - 'null'
+                    additionalProperties: true
+                  assistant_answer:
+                    type: string
+                  confidence:
+                    type:
+                    - number
+                    - 'null'
+                  recommended_next_steps:
+                    type: array
+                    items:
+                      type: string
+                  ask_back:
+                    type: array
+                    items:
+                      type: string
+                  display_mode:
+                    type:
+                    - string
+                    - 'null'
+                  hits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        snippet:
+                          type: string
+                        source_path:
+                          type: string
+                        score:
+                          type: number
+                        dtc_codes:
+                          type: array
+                          items:
+                            type: string
+                      additionalProperties: true
+                required:
+                - query
+                - total
+                - hits
+  /.well-known/freshness.json:
+    get:
+      operationId: gatewayFreshness
+      summary: Gateway freshness beacon
+      description: Returns the latest AI gateway freshness metadata and content version.
+      responses:
+        '200':
+          description: Freshness metadata
+  /.well-known/answer-routing.json:
+    get:
+      operationId: gatewayAnswerRouting
+      summary: Gateway answer routing contract
+      description: Returns the VPS rescue contract that maps generic or WAF-blocked bot landings back to exact canonical answer paths.
+      responses:
+        '200':
+          description: Answer routing metadata

@@ -1,0 +1,18 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "RS Performance — Warsztat Samochodowy Gdańsk",
+    "name_for_model": "rs_performance_gdansk",
+    "description_for_human": "Profesjonalny warsztat samochodowy w Gdańsku. Diagnostyka, mechanika, DPF, turbo, klimatyzacja, geometria 3D, floty B2B.",
+    "description_for_model": "RS Performance is an auto repair shop in Gdańsk, Poland. Use this plugin to search their knowledge base about car repair services, diagnostic trouble codes, opening hours, location, fleet B2B services, and technical procedures. Start with ai-resources.json and llms-full.txt for discovery context.",
+    "auth": {
+        "type": "none"
+    },
+    "api": {
+        "type": "mcp",
+        "url": "https://mcp.rs3d.pl/laravel/mcp/rs-knowledge",
+        "has_user_authentication": false
+    },
+    "logo_url": "https://rsperformance.online/images/rs_logo_new.webp",
+    "contact_email": "ringgdansk@ringopony.com.pl",
+    "legal_info_url": "https://rsperformance.online/polityka-prywatnosci"
+}

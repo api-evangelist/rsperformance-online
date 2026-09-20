@@ -1,0 +1,53 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Version and freshness markers read from the live documents on 2026-09-19: the two OpenAPI copies,
+  the two agent cards, agents.json, the gateway freshness beacon, and the JSON-RPC -32601 message that
+  enumerates legacy method aliases. The provider publishes no versioning policy, deprecation policy,
+  SLA or status page; those absences are the finding.
+versioning:
+  scheme: semver-in-document (no URI or header versioning)
+  current:
+    openapi_gateway_host: 1.3.0        # https://ai.rsperformance.online/.well-known/openapi.json
+    openapi_canonical_host: 1.2.2      # https://rsperformance.online/.well-known/openapi.json — one minor behind, missing gatewayAnswerRouting
+    a2a_agent_card: 2.5.0              # /.well-known/agent-card.json, protocolVersion 0.3.0
+    a2a_legacy_card: 2.2.0             # /.well-known/agent.json
+    mcp_server: 0.3.0                  # serverInfo.version from initialize on https://mcp.rs3d.pl/
+    agents_manifest: 2026-09-20-live   # date-stamped, regenerated daily
+    ai_resources_manifest: '2026-04-13'
+  docs: null
+  note: >-
+    Versions are declared inside each document and drift between hosts (OpenAPI 1.2.2 vs 1.3.0).
+    Endpoints themselves are unversioned (POST /, /api/search). No Stripe-Version-style header, no
+    /v1/ path segment.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  legacy_surfaces:
+    - what: JSON-RPC legacy method aliases SendMessage, SendStreamingMessage, GetTask, ListTasks, CancelTask, SubscribeToTask
+      status: still served; announced only inside the -32601 error text as "legacy aliases"
+      replacement: message/send, message/stream, tasks/get, tasks/list, tasks/cancel, tasks/subscribe
+    - what: /.well-known/agent.json (pre-0.3 agent card path)
+      status: still served with an OLDER card (2.2.0, 4 skills) than the canonical path (2.5.0, 9 skills)
+      replacement: /.well-known/agent-card.json
+    - what: diagnostic_search MCP tool
+      status: live; described by the server as a "compatibility bridge for legacy Diagnosta clients"
+      replacement: semantic_search
+  note: No published timeline for retiring any of the above.
+sla:
+  url: null
+  uptime_target: null
+  note: None published. The A2A card's x_rs_ai_friendly block states a fair-use rate limit and cache TTL (>= 600 s on /.well-known/agent-card.json) but no availability commitment.
+status_page: null
+freshness_signals:
+  - url: https://ai.rsperformance.online/.well-known/freshness.json
+    fields: [last_updated, content_version, next_update_expected, sitemap_lastmod]
+    cadence: daily (beacon_refreshed_by vps_freshness_beacon.py, daily cron)
+    observed: last_updated 2026-09-19T04:00:01Z
+  - url: https://rsperformance.online/feeds/changes.json
+    format: JSON Feed 1.1
+    observed: 20 items, newest date_modified 2026-09-20T02:42:13+02:00
+  - tool: health (MCP)
+    note: reports service health and Qdrant status on demand — a liveness probe, not a status page
+deprecated_operations: []
