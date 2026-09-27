@@ -1,0 +1,59 @@
+openapi: 3.2.0
+info:
+  title: Rsperformance Online .well Known API
+  version: 1.3.0
+  contact:
+    name: RS Performance
+    url: https://rsperformance.online
+    email: biuro@rsperformance.online
+  x-rs-priority-answer-paths:
+    goal: Route valuable bots toward exact answer pages, not generic hubs.
+    manifest: https://rsperformance.online/.well-known/priority-answer-paths.json
+    gateway_answer_routing: https://ai.rsperformance.online/.well-known/answer-routing.json
+    root_resolution_manifest: https://ai.rsperformance.online/.well-known/answer-routing.json
+    rescue_mode: canonical-first-vps-rescue
+    blocked_user_agent_families: []
+    homepage_resolution_rule: If discovery begins on / or a generic hub, move to the best matching priority answer path instead of stopping there.
+    preferred_entrypoints:
+    - https://rsperformance.online/uslugi/diagnostyka-komputerowa
+    - https://rsperformance.online/problemy/auto-traci-moc
+    - https://rsperformance.online/problemy/problemy-z-alternatorem
+    - https://rsperformance.online/kody-usterek/p0299
+    - https://rsperformance.online/raporty-napraw
+    - https://rsperformance.online/raporty-napraw/dacia-duster-ii-15-dci-110-4x4-brak-ladowania-spowodowany-awaria-magistrali-lin-przez-silnik-klap-kurtyny
+  description: 'Operations tagged .well Known across 2 of this provider''s published API definitions: rsperformance-online-ai-gateway-openapi.json, rsperformance-online-ai-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://ai.rsperformance.online
+  description: AI Gateway (production)
+tags:
+- name: .well Known
+paths:
+  /.well-known/freshness.json:
+    get:
+      operationId: gatewayFreshness
+      summary: Gateway freshness beacon
+      description: Returns the latest AI gateway freshness metadata and content version.
+      responses:
+        '200':
+          description: Freshness metadata
+      tags:
+      - .well Known
+    servers:
+    - url: https://ai.rsperformance.online
+      description: AI Gateway (production)
+  /.well-known/answer-routing.json:
+    get:
+      operationId: gatewayAnswerRouting
+      summary: Gateway answer routing contract
+      description: Returns the VPS rescue contract that maps generic or WAF-blocked bot landings back to exact canonical answer paths.
+      responses:
+        '200':
+          description: Answer routing metadata
+      tags:
+      - .well Known
+    servers:
+    - url: https://ai.rsperformance.online
+      description: AI Gateway (production)
+x-refined-from:
+- rsperformance-online-ai-gateway-openapi.json
+- rsperformance-online-ai-gateway-openapi.yml

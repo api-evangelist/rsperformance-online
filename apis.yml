@@ -34,53 +34,38 @@ tags:
 - Semantic Search
 - A2A
 - MCP
+- Agent-Native
+- Local Business
+- Poland
+tags_raw:
+- Automotive
+- Auto Repair
+- Vehicle Diagnostics
+- OBD-II
+- Fault Codes
+- Knowledge Base
+- Semantic Search
+- A2A
+- MCP
 - agent-native
 - Local Business
 - Poland
 apis:
-- name: RS Performance AI Gateway API
-  description: >-
-    Three-operation REST gateway on ai.rsperformance.online (OpenAPI 3.1.0, info.version 1.3.0):
-    POST /api/search runs answer-first semantic retrieval over services, symptom pages, DTC references,
-    repair reports and blog content in Polish or English and returns assistant_answer, confidence,
-    recommended_next_steps, ask_back and scored hits with canonical source paths; GET
-    /.well-known/freshness.json and GET /.well-known/answer-routing.json expose the content version and
-    the intent-to-canonical-URL routing contract. Anonymous; no rate-limit headers on the gateway.
-  humanURL: https://ai.rsperformance.online/for-agents
-  baseURL: https://ai.rsperformance.online
-  tags:
-  - Semantic Search
-  - Knowledge Base
-  - Vehicle Diagnostics
-  - OBD-II
-  properties:
-  - type: OpenAPI
-    url: openapi/rsperformance-online-ai-gateway-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted, gateway host, v1.3.0)
-    url: https://ai.rsperformance.online/.well-known/openapi.json
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted, canonical host, v1.2.2)
-    url: https://rsperformance.online/.well-known/openapi.json
-  - type: Documentation
-    url: https://ai.rsperformance.online/for-agents
-  - type: APIReference
-    url: https://ai.rsperformance.online/.well-known/openapi.json
-  - type: Overlay
-    url: overlays/rsperformance-online-ai-gateway-overlay.yaml
-  - type: ErrorCatalog
-    url: errors/rsperformance-online-problem-types.yml
 - name: RS Performance A2A Agent
   description: >-
-    Public A2A agent for automotive intents — OBD DTC lookup, vehicle diagnostics, repair services,
-    EV/hybrid and climate/HVAC knowledge, a 19-service catalog, ten Gdańsk district routes, booking
-    and gateway semantic routing (nine skills). JSON-RPC 2.0 on POST https://rsperformance.online/
-    (message/send, message/stream, tasks/get, tasks/list, tasks/cancel, tasks/subscribe) plus HTTP+JSON
-    interfaces at /message:send, /message:stream and /tasks. Agent card version 2.5.0, protocolVersion
-    0.3.0, graded conformant; anonymous; 60 requests/minute fair-use limit signalled with X-RateLimit-*.
+    Public A2A agent for automotive intents — OBD DTC lookup, vehicle diagnostics, repair services, EV/hybrid
+    and climate/HVAC knowledge, a 19-service catalog, ten Gdańsk district routes, booking and gateway
+    semantic routing (nine skills). JSON-RPC 2.0 on POST https://rsperformance.online/ (message/send,
+    message/stream, tasks/get, tasks/list, tasks/cancel, tasks/subscribe) plus HTTP+JSON interfaces at
+    /message:send, /message:stream and /tasks. Agent card version 2.5.0, protocolVersion 0.3.0, graded
+    conformant; anonymous; 60 requests/minute fair-use limit signalled with X-RateLimit-*.
   humanURL: https://rsperformance.online/centrum-wiedzy
-  baseURL: https://rsperformance.online
   tags:
+  - A2A
+  - Agent-Native
+  - Vehicle Diagnostics
+  - Fault Codes
+  tags_raw:
   - A2A
   - agent-native
   - Vehicle Diagnostics
@@ -99,16 +84,21 @@ apis:
     url: rate-limits/rsperformance-online-rate-limits.yml
 - name: Diagnosta RS MCP Server
   description: >-
-    Remote Model Context Protocol server (FastMCP, protocol 2025-06-18, Streamable HTTP with a
-    session header, legacy SSE at /mcp) at https://mcp.rs3d.pl/ — a host the provider's own
-    /.well-known/mcp.json, ai-plugin.json and CSP name and that shares the gateway's IP. Fourteen tools
-    answered an anonymous tools/list: semantic_search, diagnostic_search, search_notes, read_note,
-    repair_reports_overview, search_repair_reports, get_repair_report, health, list_sources and five
-    web-research/ingest tools, two of which write to the provider's store. A second advertised server at
-    /laravel/mcp/rs-knowledge returned HTTP 500 (MCP_SERVER_TOKEN missing) at probe time.
+    Remote Model Context Protocol server (FastMCP, protocol 2025-06-18, Streamable HTTP with a session
+    header, legacy SSE at /mcp) at https://mcp.rs3d.pl/ — a host the provider's own /.well-known/mcp.json,
+    ai-plugin.json and CSP name and that shares the gateway's IP. Fourteen tools answered an anonymous
+    tools/list: semantic_search, diagnostic_search, search_notes, read_note, repair_reports_overview,
+    search_repair_reports, get_repair_report, health, list_sources and five web-research/ingest tools,
+    two of which write to the provider's store. A second advertised server at /laravel/mcp/rs-knowledge
+    returned HTTP 500 (MCP_SERVER_TOKEN missing) at probe time.
   humanURL: https://rsperformance.online/wiedza-ai
   baseURL: https://mcp.rs3d.pl
   tags:
+  - MCP
+  - Agent-Native
+  - Semantic Search
+  - Knowledge Base
+  tags_raw:
   - MCP
   - agent-native
   - Semantic Search
@@ -123,6 +113,38 @@ apis:
     url: mcp/rsperformance-online-tool-crosswalk.yml
   - type: Documentation
     url: https://rsperformance.online/.well-known/mcp.json
+- aid: rsperformance-online:rsperformance-online-search-api
+  name: RS Performance Search API
+  description: The Search API from RS Performance — 1 operation(s) for search.
+  humanURL: https://ai.rsperformance.online/for-agents
+  baseURL: https://ai.rsperformance.online
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/rsperformance-online-search-api-openapi.yml
+  - type: Documentation
+    url: https://ai.rsperformance.online/for-agents
+  - type: APIReference
+    url: https://ai.rsperformance.online/.well-known/openapi.json
+  - type: ErrorCatalog
+    url: errors/rsperformance-online-problem-types.yml
+- aid: rsperformance-online:rsperformance-online-well-known-api
+  name: RS Performance .well Known API
+  description: The .well Known API from RS Performance — 2 operation(s) for .well known.
+  humanURL: https://ai.rsperformance.online/for-agents
+  baseURL: https://ai.rsperformance.online
+  tags:
+  - .well Known
+  properties:
+  - type: OpenAPI
+    url: openapi/rsperformance-online-well-known-api-openapi.yml
+  - type: Documentation
+    url: https://ai.rsperformance.online/for-agents
+  - type: APIReference
+    url: https://ai.rsperformance.online/.well-known/openapi.json
+  - type: ErrorCatalog
+    url: errors/rsperformance-online-problem-types.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -216,3 +238,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 36
   pass: local-v3
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://rsperformance.online/.well-known/agent-card.json"
+  grade: "near-conformant"
+  protocol_version: "0.3.0"
+  control: 404
