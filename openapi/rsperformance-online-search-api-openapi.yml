@@ -1,6 +1,7 @@
 openapi: 3.2.0
 info:
-  title: Rsperformance Online Search API
+  title: RS Performance AI Gateway Search API
+  description: AI-optimized access to RS Performance diagnostic knowledge. Discovery starts on canonical machine-readable artifacts and continues through the bot-friendly gateway for answer-first semantic search and freshness signals.
   version: 1.3.0
   contact:
     name: RS Performance
@@ -21,7 +22,6 @@ info:
     - https://rsperformance.online/kody-usterek/p0299
     - https://rsperformance.online/raporty-napraw
     - https://rsperformance.online/raporty-napraw/dacia-duster-ii-15-dci-110-4x4-brak-ladowania-spowodowany-awaria-magistrali-lin-przez-silnik-klap-kurtyny
-  description: 'Operations tagged Search across 2 of this provider''s published API definitions: rsperformance-online-ai-gateway-openapi.json, rsperformance-online-ai-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://ai.rsperformance.online
   description: AI Gateway (production)
@@ -124,9 +124,3 @@ paths:
                 - hits
       tags:
       - Search
-    servers:
-    - url: https://ai.rsperformance.online
-      description: AI Gateway (production)
-x-refined-from:
-- rsperformance-online-ai-gateway-openapi.json
-- rsperformance-online-ai-gateway-openapi.yml

@@ -1,20 +1,17 @@
 {
   "provider": "rsperformance-online",
   "sources": [
-    "_original/rsperformance-online-ai-gateway-openapi.json",
-    "rsperformance-online-ai-gateway-openapi.yml"
+    "_original/rsperformance-online-ai-gateway-openapi.json"
   ],
   "outputs": [
     "rsperformance-online-well-known-api-openapi.yml",
     "rsperformance-online-search-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/rsperformance-online-ai-gateway-openapi.yml"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
-    "1 archived document(s) dropped as subsets of other archived documents",
+    "2 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "rsperformance-online-ai-gateway-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "rsperformance-online-ai-gateway-openapi.json: tagged paths POST /api/search -> Search",
@@ -22,17 +19,12 @@
     "rsperformance-online-ai-gateway-openapi.json: tagged paths GET /.well-known/answer-routing.json -> .well Known",
     "rsperformance-online-ai-gateway-openapi.json: declared missing tag: .well Known",
     "rsperformance-online-ai-gateway-openapi.json: declared missing tag: Search",
-    "rsperformance-online-ai-gateway-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "rsperformance-online-ai-gateway-openapi.yml: tagged paths POST /api/search -> Search",
-    "rsperformance-online-ai-gateway-openapi.yml: tagged paths GET /.well-known/freshness.json -> .well Known",
-    "rsperformance-online-ai-gateway-openapi.yml: tagged paths GET /.well-known/answer-routing.json -> .well Known",
-    "rsperformance-online-ai-gateway-openapi.yml: declared missing tag: .well Known",
-    "rsperformance-online-ai-gateway-openapi.yml: declared missing tag: Search",
-    "tag '.well Known' spans 2 source specs (rsperformance-online-ai-gateway-openapi.json, rsperformance-online-ai-gateway-openapi.yml): per-path servers applied",
-    "tag 'Search' spans 2 source specs (rsperformance-online-ai-gateway-openapi.json, rsperformance-online-ai-gateway-openapi.yml): per-path servers applied",
-    "apis.yml register: written (+2 apis, 4 total)"
+    "apis.yml register: already-registered"
   ],
   "skipped": [
-    "_original/rsperformance-online-ai-gateway-openapi-canonical-host-v1.2.2.json: archived document superseded by a larger archived document"
+    "_original/rsperformance-online-ai-gateway-openapi.yml: archived document superseded by a larger archived document",
+    "_original/rsperformance-online-ai-gateway-openapi-canonical-host-v1.2.2.json: archived document superseded by a larger archived document",
+    "rsperformance-online-search-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rsperformance-online-well-known-api-openapi.yml: previously refined output, superseded by openapi/_original/"
   ]
 }
