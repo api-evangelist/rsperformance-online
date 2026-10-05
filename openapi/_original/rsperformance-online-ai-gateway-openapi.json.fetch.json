@@ -1,0 +1,12 @@
+{
+ "url": "https://ai.rsperformance.online/.well-known/openapi.json",
+ "requested_url": "https://ai.rsperformance.online/.well-known/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 7193,
+ "sha256": "1abdbf3d5eea3fcd9b8296fd6b90f1fbe8a8fa3d58d66a6f8964192ea4b5ad8e",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
