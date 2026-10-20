@@ -221,3 +221,96 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools:
+- name: semantic_search
+  description: 'Search the RS Performance knowledge base using AI semantic search.
+
+
+
+
+
+
+
+
+
+
+
+
+    Returns the most relevant documents about services, FAQ, business info, blog posts, and DTC codes.
+
+
+
+
+
+
+
+
+
+
+
+
+    Use doc_type to filter: ''service'', ''blog'', ''dtc'', ''business'', ''faq'', or '''' for all.'
+- name: diagnostic_search
+  description: 'Compatibility bridge for legacy Diagnosta clients expecting diagnostic_search.
+
+
+
+    For end-user replies, prefer `assistant_answer`, `confidence`, `recommended_next_steps`, and `ask_back`.
+
+
+
+    Use raw `hits` only as evidence/debug, not as the main final response.'
+- name: diagnostic_web_research
+  description: 'Search the live web through local SearXNG and extract readable evidence with Trafilatura.
+
+
+    Prefer this when the query needs fresh public context or forum/TSB-style evidence from the internet.
+
+    For end-user replies, prefer `assistant_answer`, `confidence`, `recommended_next_steps`, and `ask_back`.
+
+    Use raw `hits` only as evidence/debug.'
+- name: diagnostic_search_live
+  description: 'Combine local Diagnosta knowledge with live web research.
+
+
+    Uses canonical DTC JSON, private notes, Qdrant retrieval, local SearXNG, and Trafilatura extraction.
+
+    Prefer this for owner-only deep diagnosis when local knowledge should be augmented by current public
+    web sources.'
+- name: diagnostic_deep_research
+  description: 'Run owner-only deep internet research for Diagnosta.
+
+
+    Uses local SearXNG discovery with a separate deep-ingest worker that can enrich from
+
+    HTML pages, documents, and YouTube transcripts. Prefer this when you explicitly want
+
+    broader internet evidence beyond the standard live web search.'
+- name: diagnostic_ingest_brand_knowledge
+  description: 'Collect and save a brand knowledge packet on the VPS for private Diagnosta use.
+
+
+    Use this when the owner says things like "pobierz dane o Fiat" or asks to gather
+
+    a broader research pack for a manufacturer. This tool does not promise "the whole internet".
+
+    It runs a bounded multi-query scrape, saves artifacts on the VPS, and returns the saved paths.
+
+    `topics_csv` is optional and can narrow the batch, e.g. `Multijet,Body Computer,CAN`.'
+- name: health
+  description: Return the current health and directory layout of the Diagnosta RS MCP service.
+- name: list_sources
+  description: List the top-level directories and searchable files inside the Diagnosta knowledge root.
+- name: search_notes
+  description: Search the Diagnosta knowledge base for a phrase and return matching file snippets.
+- name: read_note
+  description: Read a single Diagnosta knowledge document from the private data store.
+- name: write_intake_note
+  description: Write a new intake note into the Diagnosta knowledge base.
+- name: repair_reports_overview
+  description: Fetch an overview of RS Performance repair reports from the secured Laravel API.
+- name: search_repair_reports
+  description: Search RS Performance repair reports by phrase, vehicle data, fault code or service.
+- name: get_repair_report
+  description: Fetch one repair report by numeric ID or slug from the secured Laravel API.
+tools_count: 14
