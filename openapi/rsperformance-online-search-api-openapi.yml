@@ -124,3 +124,9 @@ paths:
                 - hits
       tags:
       - Search
+x-provenance:
+  method: harvested
+  publisher: RS Performance
+  source: https://ai.rsperformance.online/.well-known/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
