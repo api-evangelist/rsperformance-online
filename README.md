@@ -64,27 +64,128 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-RS Performance Sp. z o.o. is a single-location automotive diagnostics and repair workshop at
-Al. Grunwaldzka 303B, Gdańsk, Poland (the former Premio Ring site, rebranded 2021-09-14). Over its
-knowledge base of services, FAQ, repair reports and 12,000+ OBD-II fault codes it publishes an
-unusually complete, entirely anonymous agent surface, profiled here on 2026-09-19:
+RS Performance Sp. z o.o. is a single-location automotive diagnostics and repair workshop at Al. Grunwaldzka 303B in Gdańsk, Poland (the Premio Ring site, rebranded 2021-09-14), serving Gdańsk, Sopot, Gdynia and the Tricity with 19 workshop services from computer diagnostics, DPF/AdBlue, turbo and gearbox work to tyre storage and B2B fleet service. What makes it an API provider is the machine-readable layer it has built over its knowledge base: an anonymous A2A agent (nine skills, JSON-RPC 2.0 and HTTP+JSON on rsperformance.online, agent card at the canonical well-known path), a remote FastMCP server "Diagnosta RS" with 14 tools over a Qdrant vector store of services, FAQ, repair reports and 12,000+ OBD-II fault codes, and a three-operation OpenAPI 3.1 "AI Gateway" on ai.rsperformance.online for answer-first semantic search, freshness and answer routing — plus llms.txt, security.txt, an ai-plugin manifest, JSON/Atom change feeds and a DTC JSON feed. Every surface is free and unauthenticated under a fair-use, attribution-required policy.
 
-- **A2A agent** — nine skills, JSON-RPC 2.0 on `POST https://rsperformance.online/` plus HTTP+JSON
-  interfaces; agent card at the canonical `/.well-known/agent-card.json`, graded conformant
-  (`a2a/`). A different, older card is still served at the legacy `/.well-known/agent.json`.
-- **MCP server "Diagnosta RS"** — remote FastMCP at `https://mcp.rs3d.pl/`, 14 tools with input
-  schemas returned to an anonymous `tools/list` (`mcp/`). A second advertised server at
-  `/laravel/mcp/rs-knowledge` returned HTTP 500 at probe time.
-- **REST "AI Gateway"** — OpenAPI 3.1.0 with three operations on `https://ai.rsperformance.online`
-  (`openapi/`), bound to the MCP tools and A2A skills in `mcp/rsperformance-online-tool-crosswalk.yml`.
-- **Discovery** — `llms.txt`, RFC 9116 `security.txt`, an `ai-plugin.json` whose API type is MCP, an
-  `mcp.json`, JSON Feed / Atom change feeds and a DTC JSON feed (`well-known/`, `llms/`, `changelog/`).
+**Areas:** Automotive · Auto Repair · Vehicle Diagnostics · OBD-II · Fault Codes · Knowledge Base · Semantic Search · A2A · MCP · Agent-Native · Local Business · Poland
 
-No OAuth, no API keys, no published plans: everything is free under a fair-use, attribution-required
-policy with a 60 requests/minute limit signalled by `X-RateLimit-*` headers on the canonical host.
+## RS Performance on APIs.io
 
-- Website: https://rsperformance.online/
-- Agent docs: https://ai.rsperformance.online/for-agents
-- Agent card: https://rsperformance.online/.well-known/agent-card.json
-- OpenAPI: https://ai.rsperformance.online/.well-known/openapi.json
-- llms.txt: https://rsperformance.online/llms.txt
+Everything profiled for RS Performance is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/rsperformance-online/](https://apis.io/providers/rsperformance-online/)** — or go straight to one of the APIs or properties below.
+
+### APIs (4)
+
+- [RS Performance A2A Agent](https://apis.io/apis/rsperformance-online/rs-performance-a2a-agent/) — Public A2A agent for automotive intents — OBD DTC lookup, vehicle diagnostics, repair services, EV/hybrid and climate/HVAC knowledge, a 19-service catalog,…
+- [Diagnosta RS MCP Server](https://apis.io/apis/rsperformance-online/diagnosta-rs-mcp-server/) — Remote Model Context Protocol server (FastMCP, protocol 2025-06-18, Streamable HTTP with a session header, legacy SSE at /mcp) at https://mcp.rs3d.pl/ — a…
+- [RS Performance Search API](https://apis.io/apis/rsperformance-online/rsperformance-online-search-api/) — The Search API from RS Performance — 1 operation(s) for search.
+- [RS Performance .well Known API](https://apis.io/apis/rsperformance-online/rsperformance-online-well-known-api/) — The .well Known API from RS Performance — 2 operation(s) for .well known.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [rsperformance-online-mcp.yml](https://apis.io/servers/rsperformance-online/rsperformance-online-mcp-yml/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Rsperformance Online Agentic Access](https://apis.io/agentic-access/rsperformance-online/rsperformance-online-agentic-access/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Rsperformance Online Ai Gateway Overlay](https://apis.io/overlays/rsperformance-online/rsperformance-online-ai-gateway-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Rsperformance Online Authentication](https://apis.io/security/rsperformance-online/rsperformance-online-authentication/)
+- [Rsperformance Online Domain Security](https://apis.io/security/rsperformance-online/rsperformance-online-domain-security/)
+- [Rsperformance Online Vulnerability Disclosure](https://apis.io/security/rsperformance-online/rsperformance-online-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Rsperformance Online Plans Pricing](https://apis.io/plans/rsperformance-online/rsperformance-online-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Rsperformance Online Rate Limits](https://apis.io/rate-limits/rsperformance-online/rsperformance-online-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://rsperformance.online/)
+- [Documentation](https://rsperformance.online/llms-full.txt)
+- [Getting started](https://ai.rsperformance.online/for-agents)
+- [API reference](https://ai.rsperformance.online/.well-known/openapi.json)
+- [Support](https://rsperformance.online/#kontakt)
+- [Changelog](https://rsperformance.online/feeds/changes.json)
+- [Blog](https://rsperformance.online/blog)
+- [Security](https://rsperformance.online/.well-known/security.txt)
+- [Privacy policy](https://rsperformance.online/polityka-prywatnosci)
+
+## API Evangelist rating
+
+**Kin Score 41.6** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.7 |
+| Contract quality | 44.7 |
+| Contract governance | 18.2 |
+| Operational transparency | 47.4 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 10.5 |
+
+**Agent readiness 39.5** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | yes |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | conformant |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 38.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/rsperformance-online/](https://apis.io/providers/rsperformance-online/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for RS Performance: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/rsperformance-online/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
